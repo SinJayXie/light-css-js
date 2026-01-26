@@ -21,7 +21,7 @@ export class LightCSS {
   private sheet: CSSStyleSheet;
   private lastUpdateTime: number;
 
-  public version = '1.0.01';
+  public version = '1.0.1';
 
   constructor(opt: LightCSSOptions) {
     const baseOpt = Object.assign({
