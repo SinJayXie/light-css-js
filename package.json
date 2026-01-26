@@ -1,6 +1,6 @@
 {
-  "name": "light-css",
-  "private": true,
+  "name": "light-css-js",
+  "private": false,
   "version": "1.0.0",
   "type": "module",
   "files": [
@@ -8,13 +8,13 @@
     "README.md",
     "index.d.ts"
   ],
-  "main": "./dist/light-css.umd.cjs",
-  "module": "./dist/light-css.js",
+  "main": "./dist/lighty-css.umd.cjs",
+  "module": "./dist/lighty-css.js",
   "types": "./index.d.ts",
   "exports": {
     "types": "./index.d.ts",
-    "import": "./dist/light-css.js",
-    "require": "./dist/light-css.umd.cjs"
+    "import": "./dist/lighty-css.js",
+    "require": "./dist/lighty-css.umd.cjs"
   },
   "scripts": {
     "dev": "vite",
