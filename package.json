@@ -5,6 +5,7 @@
   "type": "module",
   "files": [
     "dist",
+    "README.md",
     "index.d.ts"
   ],
   "main": "./dist/light-css.umd.cjs",
