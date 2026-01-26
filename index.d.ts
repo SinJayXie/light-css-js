@@ -3,9 +3,16 @@ export interface IRule {
     handler: (val: string, match: Array<string>) => Record<string, string>;
 }
 
+export interface LightCSSOptions {
+    rules?: IRule[];
+    prefix?: string;
+    useInnerHTML?: boolean;
+    defaultRules?: boolean;
+}
+
 export class LightCSS {
   constructor(rules?: IRule[])
   destroy(): void
 }
 
-export function lightCSS(): LightCSS
+export function lightCSS(opt?: LightCSSOptions): LightCSS
