@@ -6,12 +6,14 @@ import { defineConfig } from 'eslint/config';
 export default defineConfig([
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    ignores: ['index.d.ts'],
     plugins: { js },
     extends: ['js/recommended'],
     languageOptions: { globals: { ...globals.browser, ...globals.node }}
   },
   tseslint.configs.recommended,
   {
+    ignores: ['index.d.ts'],
     rules: {
       'accessor-pairs': 2,
       'arrow-spacing': [2, {
