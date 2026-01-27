@@ -4,14 +4,11 @@
  * @returns 去重且非空的class名称数组
  */
 export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
-  // 初始化Set（天然去重，比数组push后再去重更高效）
   const classNamesSet = new Set<string>();
 
-  // 处理根元素的class
   const rootClassNames = String(rootDom.className).trim().split(/\s+/);
   rootClassNames.forEach(cls => cls && classNamesSet.add(cls));
 
-  // 处理所有子元素的class（直接限定类型，避免内部instanceof判断）
   const allChildElements = rootDom.querySelectorAll<Element>('*');
   allChildElements.forEach(child => {
     try {
@@ -22,7 +19,6 @@ export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
     }
   });
 
-  // 转换为数组返回
   return Array.from(classNamesSet);
 };
 
