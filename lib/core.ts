@@ -1,7 +1,7 @@
 import { extractClassFromDom } from './utils';
 import { buildStyle, createStyle } from './utils/create-style.ts';
 import { defaultRules, IRule } from './utils/rules.ts';
-
+const br = '\n';
 export interface LightCSSOptions {
     rules?: IRule[];
     prefix?: string;
@@ -21,7 +21,7 @@ export class LightCSS {
   private sheet: CSSStyleSheet;
   private lastUpdateTime: number;
 
-  public version = '1.0.1';
+  public version = '1.0.2';
 
   constructor(opt: LightCSSOptions) {
     const baseOpt = Object.assign({
@@ -87,7 +87,7 @@ export class LightCSS {
       );
 
       if (this.insertMode === 1) {
-        this.style.innerHTML += styleRules.join('\n');
+        this.style.innerHTML += styleRules.join(br) + br;
       } else {
         try {
           styleRules.forEach(rule => {
@@ -96,7 +96,7 @@ export class LightCSS {
         } catch (e) {
           console.warn(`[LightCSS]：Warning call "insertRule()" fail. Use "innerHTML" append.`);
           console.error(e);
-          this.style.innerHTML += styleRules.join(' '); // 兜底方案，以防insertRule失败
+          this.style.innerHTML += styleRules.join(br); // 兜底方案，以防insertRule失败
         }
       }
     }
