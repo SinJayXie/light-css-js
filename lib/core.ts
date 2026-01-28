@@ -1,7 +1,9 @@
 import { extractClassFromDom } from './utils';
 import { buildStyle, createStyle } from './utils/create-style.ts';
 import { defaultRules, IRule } from './utils/rules.ts';
+
 const br = '\n';
+
 export interface LightCSSOptions {
     rules?: IRule[];
     prefix?: string;
@@ -13,6 +15,8 @@ enum INSERT_MODE {
     RULE,
     HTML
 }
+
+const VERSION = '1.0.3';
 
 export class LightCSS {
   private readonly ob: MutationObserver;
@@ -26,7 +30,7 @@ export class LightCSS {
   private sheet: CSSStyleSheet;
   private lastUpdateTime: number;
 
-  public version = '1.0.2';
+  public version = VERSION;
 
   constructor(opt: LightCSSOptions) {
     const baseOpt = Object.assign({
