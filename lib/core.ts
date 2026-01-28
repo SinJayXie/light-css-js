@@ -9,6 +9,11 @@ export interface LightCSSOptions {
     defaultRules?: boolean;
 }
 
+enum INSERT_MODE {
+    RULE,
+    HTML
+}
+
 export class LightCSS {
   private readonly ob: MutationObserver;
   private readonly classMap: Map<string, Record<string, string>>;
@@ -32,7 +37,7 @@ export class LightCSS {
     this.style = document.createElement('style');
     this.sheet = new CSSStyleSheet();
     this.cacheClassName = new Set();
-    this.insertMode = baseOpt.useInnerHTML ? 1 : 2;
+    this.insertMode = baseOpt.useInnerHTML ? INSERT_MODE.HTML : INSERT_MODE.RULE;
     this.rules = [...baseOpt.rules || []]; // 导入用户规则
     this.parentClass = baseOpt.prefix || '';
     this.lastUpdateTime = performance.now();
@@ -86,7 +91,7 @@ export class LightCSS {
         performance.now() - this.lastUpdateTime
       );
 
-      if (this.insertMode === 1) {
+      if (this.insertMode === INSERT_MODE.HTML) {
         this.style.innerHTML += styleRules.join(br) + br;
       } else {
         try {
@@ -96,7 +101,7 @@ export class LightCSS {
         } catch (e) {
           console.warn(`[LightCSS]：Warning call "insertRule()" fail. Use "innerHTML" append.`);
           console.error(e);
-          this.style.innerHTML += styleRules.join(br); // 兜底方案，以防insertRule失败
+          this.style.innerHTML += styleRules.join(br); // 以防insertRule失败
         }
       }
     }
@@ -137,6 +142,7 @@ export class LightCSS {
     if (isAppendDefault) this.rules.push(...defaultRules());
     this.style.setAttribute('type', 'text/css');
     this.style.setAttribute('data-plugin-name', 'light-css.js');
+    console.log('[LightCSS] Init successfully version:%s', this.version);
     document.head.appendChild(this.style);
     this.sheet = this.style.sheet!;
     this.ob.observe(document.body, {
