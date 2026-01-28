@@ -3,9 +3,11 @@ import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [dts({
-    entryRoot: 'src',
+    insertTypesEntry: true,
+    rollupTypes: true,
     outDir: './',
-    rollupTypes: true
+    entryRoot: 'lib',
+    include: ['lib/**/*']
   })],
   build: {
     sourcemap: true,
