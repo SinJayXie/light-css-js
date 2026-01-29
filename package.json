@@ -17,11 +17,11 @@
   "license": "MIT",
   "homepage": "https://github.com/sinjayxie/light-css-js",
   "main": "./dist/light-css.umd.js",
-  "module": "./dist/light-css.js",
+  "module": "./dist/light-css.es.js",
   "types": "./index.d.ts",
   "exports": {
     "types": "./index.d.ts",
-    "import": "./dist/light-css.js",
+    "import": "./dist/light-css.es.js",
     "require": "./dist/light-css.umd.js"
   },
   "scripts": {
