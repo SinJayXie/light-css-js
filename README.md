@@ -31,7 +31,7 @@ pnpm add light-css
 ### 基本使用
 
 ```javascript
-import { lightCSS } from 'light-css';
+import { lightCSS } from 'light-css-js';
 
 // 初始化
 const css = lightCSS();
@@ -43,7 +43,7 @@ const css = lightCSS();
 ### 配置选项
 
 ```javascript
-import { lightCSS } from 'light-css';
+import { lightCSS } from 'light-css-js';
 
 // CDN 引入 
 // lightCSS.lightCSS({...})
@@ -143,7 +143,7 @@ const css = lightCSS({
 您可以通过配置选项添加自定义规则：
 
 ```javascript
-import { lightCSS } from 'light-css';
+import { lightCSS } from 'light-css-js';
 
 const css = lightCSS({
   rules: [
