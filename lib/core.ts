@@ -2,7 +2,10 @@ import { extractClassFromDom } from './utils';
 import { buildStyle, createStyle } from './utils/create-style.ts';
 import { defaultRules, IRule } from './utils/rules.ts';
 
+const cacheApp = new WeakSet();
 const br = '\n';
+
+(window as unknown as { _LightCSS_INSTANCE_: WeakSet<LightCSS> })['_LightCSS_INSTANCE_'] = cacheApp;
 
 export interface LightCSSOptions {
     rules?: IRule[];
@@ -16,7 +19,7 @@ enum INSERT_MODE {
     HTML
 }
 
-const VERSION = '1.0.3';
+const VERSION = '1.0.4';
 
 export class LightCSS {
   private readonly ob: MutationObserver;
@@ -45,7 +48,7 @@ export class LightCSS {
     this.rules = [...baseOpt.rules || []]; // 导入用户规则
     this.parentClass = baseOpt.prefix || '';
     this.lastUpdateTime = performance.now();
-    this._init(baseOpt.defaultRules);
+    this.init(baseOpt.defaultRules);
   }
 
   private addCache(arr: string[]) {
@@ -142,7 +145,7 @@ export class LightCSS {
      * @param isAppendDefault
      * @private
      */
-  private _init(isAppendDefault: boolean) {
+  private init(isAppendDefault: boolean) {
     if (isAppendDefault) this.rules.push(...defaultRules());
     this.style.setAttribute('type', 'text/css');
     this.style.setAttribute('data-plugin-name', 'light-css.js');
@@ -155,5 +158,6 @@ export class LightCSS {
       attributes: true,
       attributeFilter: ['class']
     });
+    cacheApp.add(this);
   }
 }

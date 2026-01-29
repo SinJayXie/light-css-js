@@ -6,9 +6,12 @@
 
 - **轻量级**：核心代码体积小，仅包含必要的功能
 - **动态生成**：根据类名实时生成 CSS 样式，无需预编译
-- **响应式**：支持通过类名快速设置响应式样式
 - **灵活配置**：支持自定义规则和前缀
-- **TypeScript 支持**：提供完整的类型定义
+
+## 项目地址
+
+[light-css-js](https://github.com/sinjayxie/light-css-js.git)
+
 
 ## 安装
 
@@ -42,6 +45,9 @@ const css = lightCSS();
 ```javascript
 import { lightCSS } from 'light-css';
 
+// CDN 引入 
+// lightCSS.lightCSS({...})
+
 // 带配置的初始化
 const css = lightCSS({
   // 自定义规则
@@ -55,7 +61,7 @@ const css = lightCSS({
 });
 ```
 
-## 支持的类名规则
+## 支持的类名规则默认规则
 
 ### 文本样式
 
@@ -142,8 +148,8 @@ import { lightCSS } from 'light-css';
 const css = lightCSS({
   rules: [
     {
-      // 自定义规则：shadow-[值]
-      regex: /^color-\[(.*)]$/, // 支持 Function
+      // 自定义规则：color-[值]
+      regex: /^color-\[(.*)]$/, // 支持 Function (classStr: string) => Boolean | Match string 这个返回给 handler(val) 的第一个参数
       handler(_, match) {
         const val = match[1];
         return {
@@ -211,8 +217,16 @@ MIT License
 
 ## 版本历史
 
+### v1.0.4
+- 更新文档 优化问题
+
+
 ### v1.0.0
 - 初始版本
 - 实现基本的类名到 CSS 转换功能
 - 支持多种常用样式规则
 - 提供 TypeScript 类型定义
+
+
+
+
