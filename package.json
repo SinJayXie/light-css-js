@@ -13,6 +13,7 @@
     "Tailwind",
     "CSS"
   ],
+  "license": "MIT",
   "homepage": "https://github.com/sinjayxie/light-css-js",
   "main": "./dist/light-css.umd.js",
   "module": "./dist/light-css.js",
