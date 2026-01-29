@@ -11,7 +11,8 @@
   "keywords": [
     "Unocss",
     "Tailwind",
-    "CSS"
+    "CSS",
+    "CSS-in-JS"
   ],
   "license": "MIT",
   "homepage": "https://github.com/sinjayxie/light-css-js",
