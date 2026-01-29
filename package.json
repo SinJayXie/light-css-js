@@ -8,6 +8,11 @@
     "README.md",
     "index.d.ts"
   ],
+  "keywords": [
+    "Unocss",
+    "Tailwind",
+    "CSS"
+  ],
   "homepage": "https://github.com/sinjayxie/light-css-js",
   "main": "./dist/light-css.umd.js",
   "module": "./dist/light-css.js",
