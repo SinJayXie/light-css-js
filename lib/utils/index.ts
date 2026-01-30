@@ -28,5 +28,17 @@ export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
  * @returns 转义后的字符串
  */
 export const escapeCssSpecialChars = (str: string): string => {
-  return str.replace(/([\[\]#])/g, '\\$1');
+  return str.replace(/([\[\]#:])/g, '\\$1');
+};
+
+/**
+ * 获取选择器
+ * @param key
+ */
+export const getSelector = function(key: string) {
+  const res = key.split(':').shift();
+  if (res !== '' && res !== undefined) {
+    return ':' + res.trim();
+  }
+  return '';
 };

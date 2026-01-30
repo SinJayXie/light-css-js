@@ -1,5 +1,9 @@
 import { IRule } from './rules.ts';
-import { escapeCssSpecialChars } from './index.ts';
+import { escapeCssSpecialChars, getSelector } from './index.ts';
+
+const fmtClassStr = function(str: string) {
+  return str.replace(/^hover:/, '').trim();
+};
 
 /**
  * 创建 style rule 对象 MAP
@@ -10,22 +14,24 @@ import { escapeCssSpecialChars } from './index.ts';
 export const createStyle = (classList: string[], rules: IRule[], map: Map<string, Record<string, string>>) => {
   const cacheMap = map;
   classList.forEach(classStr => {
+    const fmtClass = fmtClassStr(classStr);
     if (cacheMap.has(classStr)) return; // 样式缓存表有就不执行了，跳过
     for (const rule of rules) {
       if (typeof rule.regex === 'function') { // regex 也可以是方法
-        const val = rule.regex(classStr);
+        const val = rule.regex(fmtClass);
         if (typeof val === 'string') {
           const styleRule = rule.handler(val.trim(), [val]);
           if (styleRule) cacheMap.set(classStr, styleRule); // 存入样式表缓存
           break; // 处理下一条 class
         }
       } else if ((rule.regex as unknown) instanceof RegExp) { // 正则模式
-        const match = classStr.match(rule.regex);
+        const match = fmtClass.match(rule.regex);
         if (match) {
-          const [className, value] = match;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const [_, value] = match;
           if (value) {
             const styleRule = rule.handler(value, match);
-            if (styleRule !== null) cacheMap.set(className, styleRule); // 存入样式表缓存
+            if (styleRule !== null) cacheMap.set(classStr, styleRule); // 存入样式表缓存
           }
           break; // 处理下一条 class
         }
@@ -49,7 +55,8 @@ export const buildStyle = (map: Map<string, Record<string, string>>, oldKeys: st
     const fmtKey = escapeCssSpecialChars(key); // 格式化下 [、]、# 等 css 不能直接识别的符号
     const prefixKey = prefix ? '.' + prefix + ' ' : ''; // 拼接前缀 -> .prefix .text-[16px] { ... }
     let hasChild = false;
-    const styleBlock = [`${prefixKey}.${fmtKey}{`];
+    const hasSelector = key.startsWith('hover:') || key.startsWith('active:');
+    const styleBlock = [`${prefixKey}.${fmtKey}${hasSelector ? getSelector(key) : ''}{`];
     const configs: string[] = [];
     Object.keys(config).forEach(item => {
       if (item === 'child') {

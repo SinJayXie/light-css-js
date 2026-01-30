@@ -5,7 +5,7 @@ lightCSS({ useInnerHTML: true });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div class="full-w flex-[2]">
-  <div class="position-absolute left-[0px] top-[0] w-[100px]">123123</div>
+  <div class="position-absolute left-[0px] top-[0] w-[100px] hover:text-[red] active:text-[green]">123123</div>
     <a href="https://vite.dev" target="_blank">
       <img src="/vite.svg" class="logo size-[60px]" alt="Vite logo" />
     </a>
