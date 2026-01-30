@@ -11,6 +11,7 @@ export declare class LightCSS {
     private readonly parentClass;
     private readonly insertMode;
     private readonly cacheClassName;
+    private readonly config;
     private sheet;
     private lastUpdateTime;
     version: string;
@@ -48,7 +49,7 @@ export declare class LightCSS {
      * @param isAppendDefault
      * @private
      */
-    private _init;
+    private init;
 }
 
 export declare function lightCSS(opt?: LightCSSOptions): LightCSS;
@@ -58,6 +59,7 @@ declare interface LightCSSOptions {
     prefix?: string;
     useInnerHTML?: boolean;
     defaultRules?: boolean;
+    throttleDelay?: number;
 }
 
 export { }
