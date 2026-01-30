@@ -1,7 +1,7 @@
 /**
- * 从指定DOM元素及其所有子元素中提取所有唯一的class类名
+ * 获取DOM下所有 Classname
  * @param rootDom 根DOM元素
- * @returns 去重且非空的class名称数组
+ * @returns {string[]} 返回 Class rule 数组
  */
 export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
   const classNamesSet = new Set<string>();
@@ -27,6 +27,7 @@ export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
 
   return Array.from(classNamesSet);
 };
+
 /**
  * 转义字符串中的CSS特殊字符（[ # ]）
  * @param str 需要转义的字符串
