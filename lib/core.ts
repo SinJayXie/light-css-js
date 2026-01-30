@@ -1,17 +1,18 @@
-import { extractClassFromDom } from './utils';
+import { extractClassFromDom, throttleWithMerge } from './utils';
 import { buildStyle, createStyle } from './utils/create-style.ts';
 import { defaultRules, IRule } from './utils/rules.ts';
 
 const cacheApp = new WeakSet();
 const br = '\n';
-
-(window as unknown as { _LightCSS_INSTANCE_: WeakSet<LightCSS> })['_LightCSS_INSTANCE_'] = cacheApp;
+const LIGHT_CSS_INSTANCE_KEY = Symbol.for('LightCSS:INSTANCE');
+(window as unknown as { [LIGHT_CSS_INSTANCE_KEY]: WeakSet<LightCSS> })[LIGHT_CSS_INSTANCE_KEY] = cacheApp;
 
 export interface LightCSSOptions {
     rules?: IRule[];
     prefix?: string;
     useInnerHTML?: boolean;
     defaultRules?: boolean;
+    throttleDelay?: number;
 }
 
 enum INSERT_MODE {
@@ -29,6 +30,7 @@ export class LightCSS {
   private readonly parentClass: string;
   private readonly insertMode: number;
   private readonly cacheClassName: Set<string>;
+  private readonly config: LightCSSOptions;
 
   private sheet: CSSStyleSheet;
   private lastUpdateTime: number;
@@ -36,19 +38,20 @@ export class LightCSS {
   public version = VERSION;
 
   constructor(opt: LightCSSOptions) {
-    const baseOpt = Object.assign({
-      defaultRules: true
+    this.config = Object.assign<LightCSSOptions, LightCSSOptions>({
+      defaultRules: true,
+      throttleDelay: 16
     }, opt);
-    this.ob = new MutationObserver(this.handler.bind(this));
+    this.ob = new MutationObserver(throttleWithMerge(this.handler.bind(this), this.config.throttleDelay || 16));
     this.classMap = new Map();
     this.style = document.createElement('style');
     this.sheet = new CSSStyleSheet();
     this.cacheClassName = new Set();
-    this.insertMode = baseOpt.useInnerHTML ? INSERT_MODE.HTML : INSERT_MODE.RULE;
-    this.rules = [...baseOpt.rules || []]; // 导入用户规则
-    this.parentClass = baseOpt.prefix || '';
+    this.insertMode = this.config.useInnerHTML ? INSERT_MODE.HTML : INSERT_MODE.RULE;
+    this.rules = [...this.config.rules || []]; // 导入用户规则
+    this.parentClass = this.config.prefix || '';
     this.lastUpdateTime = performance.now();
-    this.init(baseOpt.defaultRules);
+    this.init(this.config.defaultRules);
   }
 
   private addCache(arr: string[]) {
@@ -93,24 +96,28 @@ export class LightCSS {
     if (lastSize < this.classMap.size) {
       const styleRules = buildStyle(this.classMap, oldKeys, this.parentClass);
       console.log(
-        '[LightCSS]: Add patch style %d - %dms',
+        '[LightCSS]: Add patch style %d - (%sms)',
         this.classMap.size - lastSize,
-        performance.now() - this.lastUpdateTime
+        (performance.now() - this.lastUpdateTime).toFixed(5)
       );
 
-      if (this.insertMode === INSERT_MODE.HTML) {
-        this.style.innerHTML += styleRules.join(br) + br;
-      } else {
-        try {
-          styleRules.forEach(rule => {
-            this.sheet.insertRule(rule);
-          });
-        } catch (e) {
-          console.warn(`[LightCSS]：Warning call "insertRule()" fail. Use "innerHTML" append.`);
-          console.error(e);
-          this.style.innerHTML += styleRules.join(br); // 以防insertRule失败
+      const callback = requestIdleCallback || setTimeout;
+
+      callback(() => {
+        if (this.insertMode === INSERT_MODE.HTML) {
+          this.style.innerHTML += styleRules.join(br) + br;
+        } else {
+          try {
+            styleRules.forEach(rule => {
+              this.sheet.insertRule(rule);
+            });
+          } catch (e) {
+            console.warn(`[LightCSS]：Warning call "insertRule()" fail. Use "innerHTML" append.`);
+            console.error(e);
+            this.style.innerHTML += styleRules.join(br); // 以防insertRule失败
+          }
         }
-      }
+      });
     }
   }
 
@@ -138,6 +145,7 @@ export class LightCSS {
     this.style.remove();
     this.cacheClassName.clear();
     this.classMap.clear();
+    cacheApp.delete(this);
   }
 
   /**
@@ -145,7 +153,7 @@ export class LightCSS {
      * @param isAppendDefault
      * @private
      */
-  private init(isAppendDefault: boolean) {
+  private init(isAppendDefault?: boolean) {
     if (isAppendDefault) this.rules.push(...defaultRules());
     this.style.setAttribute('type', 'text/css');
     this.style.setAttribute('data-plugin-name', 'light-css.js');

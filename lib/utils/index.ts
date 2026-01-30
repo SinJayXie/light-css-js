@@ -9,19 +9,24 @@ export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
   const rootClassNames = String(rootDom.className).trim().split(/\s+/);
   rootClassNames.forEach(cls => cls && classNamesSet.add(cls));
 
-  const allChildElements = rootDom.querySelectorAll<Element>('*');
-  allChildElements.forEach(child => {
-    try {
-      const childClassNames = String(child.classList.value).trim().split(/\s+/);
-      childClassNames.forEach(cls => cls && classNamesSet.add(cls));
-    } catch {
-      console.log('[LightCSS] Skipping dom.');
+  const walkDom = (node: Node) => {
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    const el = node as HTMLElement;
+    const childClassNames = String(el.className).trim().split(/\s+/);
+    childClassNames.forEach(cls => cls && classNamesSet.add(cls));
+    for (let i = 0; i < el.childNodes.length; i++) {
+      walkDom(el.childNodes[i]);
     }
-  });
+  };
+
+  try {
+    walkDom(rootDom);
+  } catch {
+    console.log('[LightCSS] Skipping dom.');
+  }
 
   return Array.from(classNamesSet);
 };
-
 /**
  * 转义字符串中的CSS特殊字符（[ # ]）
  * @param str 需要转义的字符串
@@ -41,4 +46,29 @@ export const getSelector = function(key: string) {
     return ':' + res.trim();
   }
   return '';
+};
+
+/**
+ * 支持合并参数的节流函数（针对 MutationObserver 的 mutations 数组）
+ * @param fn 执行函数
+ * @param delay 节流延迟
+ * @returns 节流后的函数
+ */
+export const throttleWithMerge = function <T extends(...args: [MutationRecord[]]) => void>(
+  fn: T,
+  delay: number
+) {
+  let timer: number | null = null;
+  let pendingMutations: MutationRecord[] = [];
+
+  return (...args: Parameters<T>) => {
+    pendingMutations = pendingMutations.concat(args[0]);
+    if (!timer) {
+      timer = window.setTimeout(() => {
+        fn(pendingMutations);
+        pendingMutations = [];
+        timer = null;
+      }, delay);
+    }
+  };
 };
