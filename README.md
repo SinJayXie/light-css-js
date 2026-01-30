@@ -57,7 +57,9 @@ const css = lightCSS({
   // 是否使用 innerHTML 方式插入样式
   useInnerHTML: false,
   // 是否使用默认规则
-  defaultRules: true
+  defaultRules: true,
+  // 处理抖动延迟
+  throttleDelay: 16,
 });
 ```
 
@@ -216,6 +218,10 @@ MIT License
 欢迎提交 Issue 和 Pull Request！
 
 ## 版本历史
+
+### v1.0.8
+- 添加抖动处理样式 
+```throttleDelay: number```
 
 ### v1.0.7
 - 添加选择器 hover:rule,active:rule | hover:text-[red] active:text-[green]
