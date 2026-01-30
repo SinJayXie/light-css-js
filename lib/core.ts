@@ -19,7 +19,7 @@ enum INSERT_MODE {
     HTML
 }
 
-const VERSION = '1.0.6';
+const VERSION = '1.0.7';
 
 export class LightCSS {
   private readonly ob: MutationObserver;

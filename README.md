@@ -217,6 +217,9 @@ MIT License
 
 ## 版本历史
 
+### v1.0.7
+- 添加选择器 hover:rule,active:rule | hover:text-[red] active:text-[green]
+
 ### v1.0.5
 - 更新文档 优化问题
 
