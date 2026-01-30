@@ -10,7 +10,7 @@ export default defineConfig({
     include: ['lib/**/*']
   })],
   build: {
-    sourcemap: true,
+    sourcemap: false,
     minify: 'terser',
     terserOptions: {
       mangle: {
