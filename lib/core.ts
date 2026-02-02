@@ -8,16 +8,16 @@ const LIGHT_CSS_INSTANCE_KEY = Symbol.for('LightCSS:INSTANCE');
 (window as unknown as { [LIGHT_CSS_INSTANCE_KEY]: WeakSet<LightCSS> })[LIGHT_CSS_INSTANCE_KEY] = cacheApp;
 
 export interface LightCSSOptions {
-    rules?: IRule[];
-    prefix?: string;
-    useInnerHTML?: boolean;
-    defaultRules?: boolean;
-    throttleDelay?: number;
+  rules?: IRule[];
+  prefix?: string;
+  useInnerHTML?: boolean;
+  defaultRules?: boolean;
+  throttleDelay?: number;
 }
 
 enum INSERT_MODE {
-    RULE,
-    HTML
+  RULE,
+  HTML
 }
 
 const VERSION = '1.0.10';
@@ -48,7 +48,7 @@ export class LightCSS {
     this.sheet = new CSSStyleSheet();
     this.cacheClassName = new Set();
     this.insertMode = this.config.useInnerHTML ? INSERT_MODE.HTML : INSERT_MODE.RULE;
-    this.rules = [...this.config.rules || []]; // 导入用户规则
+    this.rules = [...this.config.rules || []]; // Import user-defined rules
     this.parentClass = this.config.prefix || '';
     this.lastUpdateTime = performance.now();
     this.init(this.config.defaultRules);
@@ -60,10 +60,10 @@ export class LightCSS {
   }
 
   /**
-     * 处理新添加的元素节点
-     * @param addedNodes
-     * @private
-     */
+   * Process newly added element nodes
+   * @param addedNodes List of nodes added to the DOM
+   * @private
+   */
   private processAddedNodes(addedNodes: NodeList) {
     addedNodes.forEach(node => {
       if (node instanceof HTMLElement) {
@@ -73,10 +73,10 @@ export class LightCSS {
   }
 
   /**
-     * 处理 class 属性的变动
-     * @param mutation
-     * @private
-     */
+   * Process changes to the class attribute
+   * @param mutation MutationRecord containing class attribute change info
+   * @private
+   */
   private processClassPatch(mutation: MutationRecord) {
     const { target } = mutation;
     if (target instanceof HTMLElement) {
@@ -85,9 +85,9 @@ export class LightCSS {
   }
 
   /**
-     * 创建样式
-     * @private
-     */
+   * Generate styles from cached class names
+   * @private
+   */
   private createStyle() {
     const lastSize = this.classMap.size;
     const oldKeys = Array.from(this.classMap.keys());
@@ -110,9 +110,9 @@ export class LightCSS {
               this.sheet.insertRule(rule);
             });
           } catch (e) {
-            console.warn(`[LightCSS]：Warning call "insertRule()" fail. Use "innerHTML" append.`);
+            console.warn(`[LightCSS] Warning: call to "insertRule()" failed. Using "innerHTML" to append styles instead.`);
             console.error(e);
-            this.style.innerHTML += styleRules.join(br); // 以防insertRule失败
+            this.style.innerHTML += styleRules.join(br); // Fallback if insertRule fails
           }
         }
       };
@@ -126,10 +126,10 @@ export class LightCSS {
   }
 
   /**
-     * 监听 MutationObserver
-     * @param mutations
-     * @private
-     */
+   * Handle MutationObserver events
+   * @param mutations Array of MutationRecords from the observer
+   * @private
+   */
   private handler(mutations: MutationRecord[]) {
     this.lastUpdateTime = performance.now();
     if (mutations.length > 0) {
@@ -142,8 +142,8 @@ export class LightCSS {
   }
 
   /**
-     * 销毁实例
-     */
+   * Destroy the LightCSS instance and clean up resources
+   */
   public destroy() {
     this.ob.disconnect();
     this.style.remove();
@@ -153,15 +153,15 @@ export class LightCSS {
   }
 
   /**
-     * 初始化
-     * @param isAppendDefault
-     * @private
-     */
+   * Initialize the LightCSS instance
+   * @param isAppendDefault Whether to include default style rules
+   * @private
+   */
   private init(isAppendDefault?: boolean) {
     if (isAppendDefault) this.rules.push(...defaultRules());
     this.style.setAttribute('type', 'text/css');
     this.style.setAttribute('data-plugin-name', 'light-css.js');
-    console.log('[LightCSS] Init successfully version:%s', this.version);
+    console.log('[LightCSS] Initialized successfully | version: %s', this.version);
     document.head.appendChild(this.style);
     this.sheet = this.style.sheet!;
     this.ob.observe(document.body, {

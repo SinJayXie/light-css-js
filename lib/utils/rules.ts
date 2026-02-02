@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 export interface IRule {
-    regex: ((name: string) => string | boolean) | RegExp;
-    handler: (val: string, match: Array<string>) => Record<string, string> | null;
+  regex: ((name: string) => string | boolean) | RegExp;
+  handler: (val: string, match: Array<string>) => Record<string, string> | null;
 }
 
 const createStyles = (style?: Record<string, string>) => Object.assign({}, style) as Record<string, string>;
 
 export const defaultRules = (): IRule[] => [
   {
-    // 文本规则操作
+    // Text rule handling
     regex: /text-\[(.*?)]$/,
     handler: (val: string) => {
       const styleSheets: Record<string, string> = {};
       if (/(px|em|vw|vh|%)/.test(val)) {
         styleSheets['font-size'] = val;
-      } else if (val.length > 2) { // 颜色处理
+      } else if (val.length > 2) { // Color handling
         styleSheets['color'] = val;
       }
       return styleSheets;
     }
   }, {
-    // 文本对齐规则
+    // Text alignment rule
     regex(name: string) {
       if (name.startsWith('text-')) {
         const val = name.replace('text-', '').trim();
@@ -37,7 +37,7 @@ export const defaultRules = (): IRule[] => [
       return style;
     }
   }, {
-    // 元素全宽高设置规则
+    // Full width/height setting rule for elements
     regex: /full-(.*)$/,
     handler(val) {
       const style = createStyles();
@@ -49,7 +49,7 @@ export const defaultRules = (): IRule[] => [
       return style;
     }
   }, {
-    // 定位规则
+    // Positioning rule
     regex: /position-(.*)/,
     handler(val: string) {
       return createStyles({
@@ -57,7 +57,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 定位偏移规则
+    // Position offset rule
     regex: /(left|right|top|bottom)-\[(.*)]$/,
     handler(_, match) {
       const [_1, pos, val] = match;
@@ -69,7 +69,7 @@ export const defaultRules = (): IRule[] => [
       return {};
     }
   }, {
-    // 尺寸/内边距/flex/gap规则
+    // Size/padding/flex/gap rule
     regex: /(flex|gap|size|w|h|p)-\[([^\]]*)]/,
     handler(_, match) {
       let key = match[1];
@@ -90,7 +90,7 @@ export const defaultRules = (): IRule[] => [
     }
   },
   {
-    // 外边距规则：m-[值] / mt-[值] / mb-[值] / ml-[值] / mr-[值]
+    // Margin rule: m-[value] / mt-[value] / mb-[value] / ml-[value] / mr-[value]
     regex: /(m|mt|mb|ml|mr)-\[([^\]]*)]/,
     handler(_, match) {
       const [_1, type, val] = match;
@@ -106,7 +106,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 边框规则：border-[值]（支持 1px solid #ccc 格式）/ border-radius-[值]
+    // Border rule: border-[value] (supports format like 1px solid #ccc) / border-radius-[value]
     regex: /(border|border-radius)-\[([^\]]*)]/,
     handler(_, match) {
       const [_1, key, val] = match;
@@ -115,7 +115,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 背景规则：bg-[颜色] / bg-img-[图片地址] / bg-size-[值] / bg-position-[值]
+    // Background rule: bg-[color] / bg-img-[image URL] / bg-size-[value] / bg-position-[value]
     regex: /bg-(img|size|position)?-?\[([^\]]*)]/,
     handler(_, match) {
       const [_1, type = '', val] = match;
@@ -126,14 +126,14 @@ export const defaultRules = (): IRule[] => [
         position: 'background-position'
       };
       const key = keyMap[type];
-      // 背景图片特殊处理（补全 url() 语法）
+      // Special handling for background images (complete url() syntax)
       const value = type === 'img' ? `url(${val})` : val;
       return createStyles({
         [key]: value
       });
     }
   }, {
-    // 透明度规则：opacity-[值]（0-1 或 0%-100%）
+    // Opacity rule: opacity-[value] (0-1 or 0%-100%)
     regex: /opacity-\[(.*)]$/,
     handler(_, match) {
       const val = match[1];
@@ -142,7 +142,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 显示模式：display-[值]（block/inline/flex/none 等）
+    // Display mode: display-[value] (block/inline/flex/none, etc.)
     regex: /display-\[(.*)]$/,
     handler(_, match) {
       const val = match[1];
@@ -151,7 +151,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // Flex 布局增强：justify-[值]（justify-content）/ align-[值]（align-items）
+    // Flex layout enhancement: justify-[value] (justify-content) / align-[value] (align-items)
     regex: /(justify|align)-\[([^\]]*)]/,
     handler(_, match) {
       const [_1, type, val] = match;
@@ -164,7 +164,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 行高规则：line-height-[值]
+    // Line height rule: line-height-[value]
     regex: /line-height-\[(.*)]$/,
     handler(_, match) {
       const val = match[1];
@@ -173,7 +173,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 字体样式：font-weight-[值] / font-style-[值]
+    // Font style: font-weight-[value] / font-style-[value]
     regex: /(font-weight|font-style)-\[([^\]]*)]/,
     handler(_, match) {
       const [_1, key, val] = match;
@@ -182,7 +182,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 溢出处理：overflow-[值] / overflow-x-[值] / overflow-y-[值]
+    // Overflow handling: overflow-[value] / overflow-x-[value] / overflow-y-[value]
     regex: /(overflow|overflow-x|overflow-y)-\[([^\]]*)]/,
     handler(_, match) {
       const [_1, key, val] = match;
@@ -191,7 +191,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 光标样式：cursor-[值]（pointer/default/hover 等）
+    // Cursor style: cursor-[value] (pointer/default/hover, etc.)
     regex: /cursor-\[(.*)]$/,
     handler(_, match) {
       const val = match[1];
@@ -200,7 +200,7 @@ export const defaultRules = (): IRule[] => [
       });
     }
   }, {
-    // 新增 line-clamp 规则
+    // New line-clamp rule
     regex: /line-clamp-\[(.*)]$/,
     handler(_, match) {
       const lineNum = match[1];

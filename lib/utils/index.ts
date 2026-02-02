@@ -1,7 +1,7 @@
 /**
- * 获取DOM下所有 Classname
- * @param rootDom 根DOM元素
- * @returns {string[]} 返回 Class rule 数组
+ * Get all class names under a DOM element
+ * @param rootDom The root DOM element
+ * @returns {string[]} Returns an array of class rules
  */
 export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
   const classNamesSet = new Set<string>();
@@ -29,17 +29,17 @@ export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
 };
 
 /**
- * 转义字符串中的CSS特殊字符（[ # ]）
- * @param str 需要转义的字符串
- * @returns 转义后的字符串
+ * Escape CSS special characters in a string ([ # ])
+ * @param str The string to be escaped
+ * @returns The escaped string
  */
 export const escapeCssSpecialChars = (str: string): string => {
   return str.replace(/([\[\]#:])/g, '\\$1');
 };
 
 /**
- * 获取选择器
- * @param key
+ * Get the selector
+ * @param key The key string used to extract the selector
  */
 export const getSelector = function(key: string) {
   const res = key.split(':').shift();
@@ -50,10 +50,10 @@ export const getSelector = function(key: string) {
 };
 
 /**
- * 支持合并参数的节流函数（针对 MutationObserver 的 mutations 数组）
- * @param fn 执行函数
- * @param delay 节流延迟
- * @returns 节流后的函数
+ * Throttle function that supports parameter merging (for the mutations array of MutationObserver)
+ * @param fn The target function to execute
+ * @param delay Throttle delay (in milliseconds)
+ * @returns The throttled function
  */
 export const throttleWithMerge = function <T extends(...args: [MutationRecord[]]) => void>(
   fn: T,
