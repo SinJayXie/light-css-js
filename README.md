@@ -1,157 +1,139 @@
 # Light CSS
+A lightweight CSS utility library that dynamically generates and applies CSS styles via class names. It delivers a development experience similar to Tailwind CSS, while being more lightweight and flexible.
 
-一个轻量级的 CSS 工具库，通过类名动态生成和应用 CSS 样式，提供类似 Tailwind CSS 的开发体验，但更加轻量和灵活。
+## Features
+- **Lightweight**: Minimal core codebase with only essential functionality included
+- **Dynamic Generation**: Generates CSS styles on the fly based on class names, no precompilation required
+- **Flexible Configuration**: Supports custom rules and class name prefixes
 
-## 特性
-
-- **轻量级**：核心代码体积小，仅包含必要的功能
-- **动态生成**：根据类名实时生成 CSS 样式，无需预编译
-- **灵活配置**：支持自定义规则和前缀
-
-## 项目地址
-
+## Project Repository
 [light-css-js](https://github.com/sinjayxie/light-css-js.git)
 
-
-## 安装
-
+## Installation
 ```bash
-# 使用 npm
+# Using npm
 npm install light-css-js
 
-# 使用 yarn
+# Using yarn
 yarn add light-css-js
 
-# 使用 pnpm
+# Using pnpm
 pnpm add light-css-js
 ```
 
-## 快速开始
-
-### 基本使用
-
+## Quick Start
+### Basic Usage
 ```javascript
 import { lightCSS } from 'light-css-js';
 
-// 初始化
+// Initialize
 const css = lightCSS();
 
-// 在需要时销毁
+// Destroy when needed
 // css.destroy();
 ```
 
-### 配置选项
-
+### Configuration Options
 ```javascript
 import { lightCSS } from 'light-css-js';
 
-// CDN 引入 
+// CDN Import
 // lightCSS.lightCSS({...})
 
-// 带配置的初始化
+// Initialize with configuration
 const css = lightCSS({
-  // 自定义规则
+  // Custom rules
   rules: [],
-  // 类名前缀
+  // Class name prefix
   prefix: 'lc-',
-  // 是否使用 innerHTML 方式插入样式
+  // Insert styles using innerHTML
   useInnerHTML: false,
-  // 是否使用默认规则
+  // Use default built-in rules
   defaultRules: true,
-  // 处理抖动延迟
+  // Throttle delay for style generation
   throttleDelay: 16,
 });
 ```
 
-## 支持的类名规则默认规则
+## Supported Default Class Name Rules
+### Text Styles
+- `text-[value]` - Set font size or text color
+  - `text-[16px]` - Set font size to 16px
+  - `text-[#ff0000]` - Set text color to red
+- `text-left` / `text-center` / `text-right` - Text alignment
 
-### 文本样式
+### Sizing & Spacing
+- `w-[value]` - Width
+  - `w-[100px]` - Set width to 100px
+- `h-[value]` - Height
+  - `h-[200px]` - Set height to 200px
+- `p-[value]` - Padding
+  - `p-[10px]` - Set padding to 10px
+- `m-[value]` - Margin
+  - `m-[10px]` - Set margin to 10px
+- `mt-[value]` / `mb-[value]` / `ml-[value]` / `mr-[value]` - Top/bottom/left/right margin
+  - `mt-[5px]` - Set top margin to 5px
 
-- `text-[值]` - 设置字体大小或颜色
-  - `text-[16px]` - 字体大小 16px
-  - `text-[#ff0000]` - 文本颜色红色
-- `text-left` / `text-center` / `text-right` - 文本对齐方式
+### Positioning
+- `position-[value]` - Position type
+  - `position-absolute` - Set to absolute positioning
+- `left-[value]` / `right-[value]` / `top-[value]` / `bottom-[value]` - Position offset
+  - `left-[10px]` - Set left offset to 10px
 
-### 尺寸和间距
+### Borders & Backgrounds
+- `border-[value]` - Border style
+  - `border-[1px solid #ccc]` - Set 1px solid gray border
+- `border-radius-[value]` - Border radius
+  - `border-radius-[4px]` - Set border radius to 4px
+- `bg-[value]` - Background color
+  - `bg-[#f0f0f0]` - Set background color to light gray
+- `bg-img-[value]` - Background image
+  - `bg-img-[url("image.jpg")]` - Set background image
+- `bg-size-[value]` - Background size
+  - `bg-size-[cover]` - Set background to cover the container
+- `bg-position-[value]` - Background position
+  - `bg-position-[center]` - Center the background image
 
-- `w-[值]` - 宽度
-  - `w-[100px]` - 宽度 100px
-- `h-[值]` - 高度
-  - `h-[200px]` - 高度 200px
-- `p-[值]` - 内边距
-  - `p-[10px]` - 内边距 10px
-- `m-[值]` - 外边距
-  - `m-[10px]` - 外边距 10px
-- `mt-[值]` / `mb-[值]` / `ml-[值]` / `mr-[值]` - 上/下/左/右边距
-  - `mt-[5px]` - 上外边距 5px
+### Flex Layout
+- `flex-[value]` - Flex property
+  - `flex-[1]` - Set flex to 1
+- `justify-[value]` - justify-content
+  - `justify-center` - Horizontally center flex items
+- `align-[value]` - align-items
+  - `align-center` - Vertically center flex items
 
-### 定位
+### Other Common Styles
+- `display-[value]` - Display mode
+  - `display-[flex]` - Enable flex layout
+  - `display-[none]` - Hide the element
+- `opacity-[value]` - Opacity
+  - `opacity-[0.5]` - Set opacity to 50%
+- `cursor-[value]` - Cursor style
+  - `cursor-[pointer]` - Set to pointer cursor
+- `line-clamp-[value]` - Text line limit
+  - `line-clamp-[2]` - Limit text to a maximum of 2 lines
 
-- `position-[值]` - 定位方式
-  - `position-absolute` - 绝对定位
-- `left-[值]` / `right-[值]` / `top-[值]` / `bottom-[值]` - 定位偏移
-  - `left-[10px]` - 左偏移 10px
-
-### 边框和背景
-
-- `border-[值]` - 边框样式
-  - `border-[1px solid #ccc]` - 1px 实线边框
-- `border-radius-[值]` - 边框圆角
-  - `border-radius-[4px]` - 4px 圆角
-- `bg-[值]` - 背景颜色
-  - `bg-[#f0f0f0]` - 背景颜色 #f0f0f0
-- `bg-img-[值]` - 背景图片
-  - `bg-img-[url("image.jpg")]` - 背景图片
-- `bg-size-[值]` - 背景大小
-  - `bg-size-[cover]` - 背景覆盖
-- `bg-position-[值]` - 背景位置
-  - `bg-position-[center]` - 背景居中
-
-### Flex 布局
-
-- `flex-[值]` - flex 属性
-  - `flex-[1]` - flex: 1
-- `justify-[值]` - justify-content
-  - `justify-center` - 水平居中
-- `align-[值]` - align-items
-  - `align-center` - 垂直居中
-
-### 其他常用样式
-
-- `display-[值]` - 显示模式
-  - `display-[flex]` - flex 布局
-  - `display-[none]` - 隐藏元素
-- `opacity-[值]` - 透明度
-  - `opacity-[0.5]` - 50% 透明度
-- `cursor-[值]` - 光标样式
-  - `cursor-[pointer]` - 指针光标
-- `line-clamp-[值]` - 文本行数限制
-  - `line-clamp-[2]` - 最多显示 2 行文本
-
-## 示例
-
+## Example
 ```html
 <div class="w-[200px] h-[200px] bg-[#f0f0f0] p-[20px] rounded-[8px]">
   <h1 class="text-[24px] text-[#333] mb-[10px]">Hello Light CSS</h1>
-  <p class="text-[14px] text-[#666] line-clamp-[2]">这是一个轻量级的 CSS 工具库，通过类名动态生成和应用 CSS 样式。</p>
+  <p class="text-[14px] text-[#666] line-clamp-[2]">This is a lightweight CSS utility library that dynamically generates and applies CSS styles via class names.</p>
   <button class="mt-[10px] px-[16px] py-[8px] bg-[#007bff] text-[#fff] rounded-[4px] hover:bg-[#0069d9]">
-    点击我
+    Click Me
   </button>
 </div>
 ```
 
-## 自定义规则
-
-您可以通过配置选项添加自定义规则：
-
+## Custom Rules
+You can add custom rules via the configuration options:
 ```javascript
 import { lightCSS } from 'light-css-js';
 
 const css = lightCSS({
   rules: [
     {
-      // 自定义规则：color-[值]
-      regex: /^color-\[(.*)]$/, // 支持 Function (classStr: string) => Boolean | Match string 这个返回给 handler(val) 的第一个参数
+      // Custom rule: color-[value]
+      regex: /^color-\[(.*)]$/, // Supports Function (classStr: string) => Boolean | Match string (passed as the first parameter to handler(val))
       handler(_, match) {
         const val = match[1];
         return {
@@ -163,87 +145,70 @@ const css = lightCSS({
 });
 ```
 
-## API 文档
+## API Documentation
+### lightCSS Function
+Creates and returns a LightCSS instance.
 
-### lightCSS 函数
+**Parameters**:
+- `options` (optional): Configuration object
+  - `rules` (optional): Array of custom rules
+  - `prefix` (optional): Class name prefix
+  - `useInnerHTML` (optional): Whether to insert styles using innerHTML
+  - `defaultRules` (optional): Whether to enable built-in default rules
 
-创建并返回一个 LightCSS 实例。
+**Return Value**:
+- LightCSS instance
 
-**参数**：
-- `options` (可选)：配置选项对象
-  - `rules` (可选)：自定义规则数组
-  - `prefix` (可选)：类名前缀
-  - `useInnerHTML` (可选)：是否使用 innerHTML 方式插入样式
-  - `defaultRules` (可选)：是否使用默认规则
+### LightCSS Class
+#### Methods
+- `destroy()`: Destroys the instance and cleans up all associated resources
 
-**返回值**：
-- LightCSS 实例
-
-### LightCSS 类
-
-#### 方法
-
-- `destroy()`：销毁实例，清理所有资源
-
-## 浏览器兼容性
-
-支持所有现代浏览器，包括：
-
+## Browser Compatibility
+Supports all modern browsers, including:
 - Chrome
 - Firefox
 - Safari
 - Edge
 
-## 开发
-
-### 本地开发
-
+## Development
+### Local Development
 ```bash
-# 安装依赖
+# Install dependencies
 pnpm install
 
-# 启动开发服务器
+# Start development server
 pnpm run dev
 
-# 构建
+# Build for production
 pnpm run build
 ```
 
-## 许可证
-
+## License
 MIT License
 
-## 贡献
+## Contribution
+Issues and Pull Requests are welcome!
 
-欢迎提交 Issue 和 Pull Request！
-
-## 版本历史
-
+## Version History
 ### v1.0.10
-- 增加 hover|active
+- Added hover|active pseudo-class support
 ```html
 <div class="color-[#333] hover:color-[red] active:color-[blue]">
-  新增 Hover Active 选择器
+  New Hover & Active Pseudo-classes
 </div>
 ```
 
 ### v1.0.8
-- 添加抖动处理样式 
-```throttleDelay: number```
+- Added throttle handling for style generation with `throttleDelay: number`
 
 ### v1.0.7
-- 添加选择器 hover:rule,active:rule | hover:text-[red] active:text-[green]
+- Added pseudo-class selectors `hover:rule` and `active:rule` (e.g., `hover:text-[red]`, `active:text-[green]`)
 
 ### v1.0.5
-- 更新文档 优化问题
-
+- Updated documentation and optimized known issues
 
 ### v1.0.0
-- 初始版本
-- 实现基本的类名到 CSS 转换功能
-- 支持多种常用样式规则
-- 提供 TypeScript 类型定义
-
-
-
-
+- Initial release
+- Implemented basic class name to CSS conversion functionality
+- Supported a variety of commonly used style rules
+- Provided TypeScript type definitions
