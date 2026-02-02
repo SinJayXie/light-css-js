@@ -17,13 +17,13 @@
 
 ```bash
 # 使用 npm
-npm install light-css
+npm install light-css-js
 
 # 使用 yarn
-yarn add light-css
+yarn add light-css-js
 
 # 使用 pnpm
-pnpm add light-css
+pnpm add light-css-js
 ```
 
 ## 快速开始
@@ -218,6 +218,14 @@ MIT License
 欢迎提交 Issue 和 Pull Request！
 
 ## 版本历史
+
+### v1.0.9
+- 增加 hover|active
+```html
+<div class="color-[#333] hover:color-[red] active:color-[blue]">
+  新增 Hover Active 选择器
+</div>
+```
 
 ### v1.0.8
 - 添加抖动处理样式 
