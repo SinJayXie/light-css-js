@@ -219,7 +219,7 @@ MIT License
 
 ## 版本历史
 
-### v1.0.9
+### v1.0.10
 - 增加 hover|active
 ```html
 <div class="color-[#333] hover:color-[red] active:color-[blue]">
