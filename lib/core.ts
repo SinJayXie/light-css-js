@@ -101,18 +101,26 @@ export class LightCSS {
         (performance.now() - this.lastUpdateTime).toFixed(5)
       );
 
-      if (this.insertMode === INSERT_MODE.HTML) {
-        this.style.innerHTML += styleRules.join(br) + br;
-      } else {
-        try {
-          styleRules.forEach(rule => {
-            this.sheet.insertRule(rule);
-          });
-        } catch (e) {
-          console.warn(`[LightCSS]：Warning call "insertRule()" fail. Use "innerHTML" append.`);
-          console.error(e);
-          this.style.innerHTML += styleRules.join(br); // 以防insertRule失败
+      const taskCall = () => {
+        if (this.insertMode === INSERT_MODE.HTML) {
+          this.style.innerHTML += styleRules.join(br) + br;
+        } else {
+          try {
+            styleRules.forEach(rule => {
+              this.sheet.insertRule(rule);
+            });
+          } catch (e) {
+            console.warn(`[LightCSS]：Warning call "insertRule()" fail. Use "innerHTML" append.`);
+            console.error(e);
+            this.style.innerHTML += styleRules.join(br); // 以防insertRule失败
+          }
         }
+      };
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(taskCall, { timeout: 16 });
+      } else {
+        setTimeout(taskCall, 0);
       }
     }
   }
