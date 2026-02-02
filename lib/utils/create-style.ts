@@ -2,7 +2,7 @@ import { IRule } from './rules.ts';
 import { escapeCssSpecialChars, getSelector } from './index.ts';
 
 const fmtClassStr = function(str: string) {
-  return str.replace(/^hover:/, '').trim();
+  return str.replace(/^(hover|active):/, '').trim();
 };
 
 /**
