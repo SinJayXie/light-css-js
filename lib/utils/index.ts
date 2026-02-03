@@ -6,13 +6,13 @@
 export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
   const classNamesSet = new Set<string>();
 
-  const rootClassNames = String(rootDom.className).trim().split(/\s+/);
+  const rootClassNames = String(rootDom.classList.value).trim().split(/\s+/);
   rootClassNames.forEach(cls => cls && classNamesSet.add(cls));
 
   const walkDom = (node: Node) => {
     if (node.nodeType !== Node.ELEMENT_NODE) return;
     const el = node as HTMLElement;
-    const childClassNames = String(el.className).trim().split(/\s+/);
+    const childClassNames = String(el.classList.value).trim().split(/\s+/);
     childClassNames.forEach(cls => cls && classNamesSet.add(cls));
     for (let i = 0; i < el.childNodes.length; i++) {
       walkDom(el.childNodes[i]);

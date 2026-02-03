@@ -27,8 +27,7 @@ export const createStyle = (classList: string[], rules: IRule[], map: Map<string
       } else if ((rule.regex as unknown) instanceof RegExp) { // Regular expression mode
         const match = fmtClass.match(rule.regex);
         if (match) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const [_, value] = match;
+          const value = match[1];
           if (value) {
             const styleRule = rule.handler(value, match);
             if (styleRule !== null) cacheMap.set(classStr, styleRule); // Store in style cache table

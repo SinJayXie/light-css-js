@@ -80,7 +80,7 @@ export class LightCSS {
   private processClassPatch(mutation: MutationRecord) {
     const { target } = mutation;
     if (target instanceof HTMLElement) {
-      this.addCache(target.className.split(/\s+/));
+      this.addCache(target.classList.value.split(/\s+/));
     }
   }
 
