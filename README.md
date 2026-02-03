@@ -191,6 +191,9 @@ Issues and Pull Requests are welcome!
 
 ## Version History
 
+### v1.0.12
+- Fix SVG element judgment error
+
 ### v1.0.11
 - Fix SVG element judgment error
 

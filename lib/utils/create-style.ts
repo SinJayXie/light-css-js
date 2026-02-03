@@ -1,8 +1,9 @@
 import { IRule } from './rules.ts';
 import { escapeCssSpecialChars, getSelector } from './index.ts';
+import { REGEX } from './regex-map.ts';
 
 const fmtClassStr = function(str: string) {
-  return str.replace(/^(hover|active):/, '').trim();
+  return str.replace(REGEX.SELECTOR, '').trim();
 };
 
 /**
@@ -57,7 +58,7 @@ export const buildStyle = (map: Map<string, Record<string, string>>, oldKeys: st
     const prefixKey = prefix ? '.' + prefix + ' ' : '';
     let hasChild = false;
     // Match (hover|active):rule
-    const hasSelector = /^(hover|active):/.test(key);
+    const hasSelector = REGEX.SELECTOR.test(key);
     const styleBlock = [`${prefixKey}.${fmtKey}${hasSelector ? getSelector(key) : ''}{`];
     const configs: string[] = [];
     Object.keys(config).forEach(item => {

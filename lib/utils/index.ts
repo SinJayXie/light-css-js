@@ -1,3 +1,5 @@
+import { REGEX } from './regex-map.ts';
+
 /**
  * Get all class names under a DOM element
  * @param rootDom The root DOM element
@@ -6,13 +8,13 @@
 export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
   const classNamesSet = new Set<string>();
 
-  const rootClassNames = String(rootDom.classList.value).trim().split(/\s+/);
+  const rootClassNames = String(rootDom.classList.value).trim().split(REGEX.SPACE);
   rootClassNames.forEach(cls => cls && classNamesSet.add(cls));
 
   const walkDom = (node: Node) => {
     if (node.nodeType !== Node.ELEMENT_NODE) return;
     const el = node as HTMLElement;
-    const childClassNames = String(el.classList.value).trim().split(/\s+/);
+    const childClassNames = String(el.classList.value).trim().split(REGEX.SPACE);
     childClassNames.forEach(cls => cls && classNamesSet.add(cls));
     for (let i = 0; i < el.childNodes.length; i++) {
       walkDom(el.childNodes[i]);
@@ -34,7 +36,7 @@ export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
  * @returns The escaped string
  */
 export const escapeCssSpecialChars = (str: string): string => {
-  return str.replace(/([\[\]#:])/g, '\\$1');
+  return str.replace(REGEX.ESCAPE_CHAR, '\\$1');
 };
 
 /**

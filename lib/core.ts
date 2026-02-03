@@ -1,11 +1,12 @@
 import { extractClassFromDom, throttleWithMerge } from './utils';
 import { buildStyle, createStyle } from './utils/create-style.ts';
 import { defaultRules, IRule } from './utils/rules.ts';
-import { version } from '../package.json' with {type: 'json'};
+import { REGEX } from './utils/regex-map.ts';
+import { Constant } from './utils/constant.ts';
 
 const cacheApp = new WeakSet();
-const br = '\n';
-const LIGHT_CSS_INSTANCE_KEY = Symbol.for('LightCSS:INSTANCE');
+const br = Constant.NEWLINE;
+const LIGHT_CSS_INSTANCE_KEY = Symbol.for(Constant.INSTANCE);
 (window as unknown as { [LIGHT_CSS_INSTANCE_KEY]: WeakSet<LightCSS> })[LIGHT_CSS_INSTANCE_KEY] = cacheApp;
 
 export interface LightCSSOptions {
@@ -21,8 +22,6 @@ enum INSERT_MODE {
   HTML
 }
 
-const VERSION = version;
-
 export class LightCSS {
   private readonly ob: MutationObserver;
   private readonly classMap: Map<string, Record<string, string>>;
@@ -36,7 +35,7 @@ export class LightCSS {
   private sheet: CSSStyleSheet;
   private lastUpdateTime: number;
 
-  public version = VERSION;
+  public version: string = Constant.VERSION;
 
   constructor(opt: LightCSSOptions) {
     this.config = Object.assign<LightCSSOptions, LightCSSOptions>({
@@ -82,7 +81,7 @@ export class LightCSS {
     const { target } = mutation;
     if (target.nodeType === Node.ELEMENT_NODE) {
       const t = target as Element;
-      this.addCache(t.classList.value.split(/\s+/));
+      this.addCache(t.classList.value.split(REGEX.SPACE));
     }
   }
 
@@ -162,7 +161,7 @@ export class LightCSS {
   private init(isAppendDefault?: boolean) {
     if (isAppendDefault) this.rules.push(...defaultRules());
     this.style.setAttribute('type', 'text/css');
-    this.style.setAttribute('data-plugin-name', 'light-css.js');
+    this.style.setAttribute('data-plugin-name', Constant.LIBRARY_NAME);
     console.log('[LightCSS] Initialized successfully | version: %s', this.version);
     document.head.appendChild(this.style);
     this.sheet = this.style.sheet!;
