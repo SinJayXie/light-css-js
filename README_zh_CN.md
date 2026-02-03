@@ -219,6 +219,9 @@ MIT License
 
 ## 版本历史
 
+### v1.0.11
+- 修复SVG元素判断错误
+
 ### v1.0.10
 - 增加 hover|active
 ```html
