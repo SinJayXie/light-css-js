@@ -1,6 +1,7 @@
 import { extractClassFromDom, throttleWithMerge } from './utils';
 import { buildStyle, createStyle } from './utils/create-style.ts';
 import { defaultRules, IRule } from './utils/rules.ts';
+import { version } from '../package.json' with {type: 'json'};
 
 const cacheApp = new WeakSet();
 const br = '\n';
@@ -20,7 +21,7 @@ enum INSERT_MODE {
   HTML
 }
 
-const VERSION = '1.0.11';
+const VERSION = version;
 
 export class LightCSS {
   private readonly ob: MutationObserver;
