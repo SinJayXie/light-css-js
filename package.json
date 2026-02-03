@@ -26,7 +26,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "patchVersion": "npm version patch && node patch-version.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
