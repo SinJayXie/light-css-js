@@ -52,6 +52,8 @@ const css = lightCSS({
   defaultRules: true,
   // Throttle delay for style generation
   throttleDelay: 16,
+  // Turn off logger
+  noLogger: false,
 });
 ```
 
@@ -155,6 +157,7 @@ Creates and returns a LightCSS instance.
   - `prefix` (optional): Class name prefix
   - `useInnerHTML` (optional): Whether to insert styles using innerHTML
   - `defaultRules` (optional): Whether to enable built-in default rules
+  - `noLogger` (optional): Whether to close the log
 
 **Return Value**:
 - LightCSS instance
@@ -190,6 +193,10 @@ MIT License
 Issues and Pull Requests are welcome!
 
 ## Version History
+
+### v1.0.14
+- Added turn off debug log
+- noLogger?: boolean
 
 ### v1.0.13
 - Add constants and regex constants 

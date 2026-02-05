@@ -60,6 +60,8 @@ const css = lightCSS({
   defaultRules: true,
   // 处理抖动延迟
   throttleDelay: 16,
+  // 关闭日志
+  noLogger: false,
 });
 ```
 
@@ -175,6 +177,7 @@ const css = lightCSS({
   - `prefix` (可选)：类名前缀
   - `useInnerHTML` (可选)：是否使用 innerHTML 方式插入样式
   - `defaultRules` (可选)：是否使用默认规则
+  - `noLogger` (可选)：是否关闭日志
 
 **返回值**：
 - LightCSS 实例
@@ -218,6 +221,10 @@ MIT License
 欢迎提交 Issue 和 Pull Request！
 
 ## 版本历史
+
+### v1.0.14
+- 添加关闭调试日志
+- noLogger?: boolean
 
 ### v1.0.13
 - 添加常量和正则常量
