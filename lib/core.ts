@@ -1,7 +1,6 @@
-import { extractClassFromDom, throttleWithMerge } from './utils';
+import { extractClassFromDom, rulePrioritySort, throttleWithMerge } from './utils';
 import { buildStyle, createStyle } from './utils/create-style.ts';
 import { defaultRules, IRule } from './utils/rules.ts';
-import { REGEX } from './utils/regex-map.ts';
 import { Constant } from './utils/constant.ts';
 import { logger } from './utils/logger.ts';
 
@@ -51,14 +50,13 @@ export class LightCSS {
     this.sheet = new CSSStyleSheet();
     this.cacheClassName = new Set();
     this.insertMode = this.config.useInnerHTML ? INSERT_MODE.HTML : INSERT_MODE.RULE;
-    this.rules = [...this.config.rules || []]; // Import user-defined rules
+    this.rules = [...rulePrioritySort(this.config.rules)]; // Import user-defined rules
     this.parentClass = this.config.prefix || '';
     this.lastUpdateTime = performance.now();
     this.init(this.config.defaultRules);
   }
 
-  private addCache(arr: string[]) {
-    if (!Array.isArray(arr) || arr.length === 0) return this;
+  private addCache(arr: Set<string> | Array<string> | DOMTokenList) {
     arr.forEach(v => this.cacheClassName.add(v));
     return this;
   }
@@ -85,7 +83,7 @@ export class LightCSS {
     const { target } = mutation;
     if (target.nodeType === Node.ELEMENT_NODE) {
       const t = target as Element;
-      this.addCache(t.classList.value.split(REGEX.SPACE));
+      this.addCache(t.classList);
     }
   }
 
@@ -96,8 +94,8 @@ export class LightCSS {
   private createStyle() {
     if (this.cacheClassName.size === 0) return;
     const lastSize = this.classMap.size;
-    const prevClassMapKeys = Array.from(this.classMap.keys());
-    createStyle(Array.from(this.cacheClassName), this.rules, this.classMap);
+    const prevClassMapKeys = new Set(this.classMap.keys());
+    createStyle(this.cacheClassName, this.rules, this.classMap);
     this.cacheClassName.clear();
     if (lastSize < this.classMap.size) {
       const styleRules = buildStyle(this.classMap, prevClassMapKeys, this.parentClass);

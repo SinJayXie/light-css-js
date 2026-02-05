@@ -1,9 +1,10 @@
 import './style.css';
 import typescriptLogo from './typescript.svg';
 import { lightCSS } from '../lib/main';
-lightCSS({ useInnerHTML: true });
+lightCSS({ prefix: 'lc-app', useInnerHTML: true });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
+  <div class="lc-app">
   <div class="full-w flex-[2]">
   <div class="position-absolute left-[0px] top-[0] w-[100px] hover:text-[red] active:text-[green]">123123</div>
     <div class="size-[64px]">
@@ -18,6 +19,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </p>
     
     <svg class="size-[20px] text-[#016fff]" xmlns="http://www.w3.org/2000/svg" width="6" height="10"><path fill-rule="evenodd" d="M.615 1.385A.54.54 0 0 1 .496.792a.544.544 0 0 1 .89-.177L4.87 4.1q.373.373.373.9 0 .528-.373.9L1.386 9.386a.54.54 0 0 1-.492.149.543.543 0 0 1-.398-.743.5.5 0 0 1 .119-.177L4.1 5.129A.18.18 0 0 0 4.153 5a.18.18 0 0 0-.053-.128z" clip-rule="evenodd"/></svg>
+  </div>
   </div>
 `;
 
@@ -37,7 +39,7 @@ setTimeout(() => {
 }, 1500);
 setTimeout(() => {
   const dom = document.createElement('div');
-  dom.className = 'size-24';
+  dom.className = 'lc-app size-24 text-[32px]';
   dom.innerHTML = '<div class="text-[skyblue] text-[40px]">aaaaaaa</div><div class="text-[orange]">Hello</div>';
   document.body.appendChild(dom);
 }, 2000);

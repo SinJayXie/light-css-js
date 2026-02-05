@@ -1,7 +1,7 @@
-
 export interface IRule {
-  regex: ((name: string) => string | boolean) | RegExp;
-  handler: (val: string, match: Array<string>) => Record<string, string> | null;
+    regex: ((name: string) => string | boolean) | RegExp;
+    handler: (val: string, match: Array<string>) => Record<string, string> | null;
+    priority?: number;
 }
 
 const createStyles = (style?: Record<string, string>) => Object.assign({}, style) as Record<string, string>;
@@ -18,10 +18,13 @@ export const defaultRules = (): IRule[] => [
   {
     // Text rule handling
     regex: /text-\[(.*?)]$/,
-    handler: (val: string) => ({
-      ...(/(px|em|vw|vh|%)/.test(val) ? { 'font-size': val } : {}),
-      ...(val.length > 2 ? { color: val } : {})
-    })
+    handler: (val: string) => {
+      if (/(px|em|vw|vh|%)/.test(val)) {
+        return { 'font-size': val };
+      } else {
+        return createStyles(val.length > 2 ? { color: val } : {});
+      }
+    }
   }, {
     // Text alignment rule
     regex: (name: string) => {

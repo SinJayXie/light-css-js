@@ -195,6 +195,7 @@ Issues and Pull Requests are welcome!
 ## Version History
 
 ### v1.0.14
+- Optimize code execution performance
 - Added turn off debug log
 - noLogger?: boolean
 

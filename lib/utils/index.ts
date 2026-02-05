@@ -1,25 +1,22 @@
 import { REGEX } from './regex-map.ts';
 import { logger } from './logger.ts';
+import { IRule } from './rules.ts';
 
 /**
  * Get all class names under a DOM element
  * @param rootDom The root DOM element
  * @returns {string[]} Returns an array of class rules
  */
-export const extractClassFromDom = (rootDom: Element): string[] => {
+export const extractClassFromDom = (rootDom: Element): Set<string> => {
   const classNamesSet = new Set<string>();
 
-  const rootClassNames = String(rootDom.classList.value).trim().split(REGEX.SPACE);
-  rootClassNames.forEach(cls => cls && classNamesSet.add(cls));
+  for (const cls of rootDom.classList) classNamesSet.add(cls);
 
   const walkDom = (node: Node) => {
     if (node.nodeType !== Node.ELEMENT_NODE) return;
     const el = node as Element;
-    const childClassNames = String(el.classList.value).trim().split(REGEX.SPACE);
-    childClassNames.forEach(cls => cls && classNamesSet.add(cls));
-    for (let i = 0; i < el.childNodes.length; i++) {
-      walkDom(el.childNodes[i]);
-    }
+    for (const cls of el.classList) classNamesSet.add(cls);
+    for (const childNode of el.childNodes) walkDom(childNode);
   };
 
   try {
@@ -27,8 +24,7 @@ export const extractClassFromDom = (rootDom: Element): string[] => {
   } catch {
     logger.log('[LightCSS] Skipping dom.');
   }
-
-  return Array.from(classNamesSet);
+  return classNamesSet;
 };
 
 /**
@@ -75,4 +71,9 @@ export const throttleWithMerge = function <T extends(...args: [MutationRecord[]]
       }, delay);
     }
   };
+};
+
+export const rulePrioritySort = function(arr?: IRule[]) {
+  if (Array.isArray(arr)) return arr.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+  return [];
 };

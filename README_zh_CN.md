@@ -223,6 +223,7 @@ MIT License
 ## 版本历史
 
 ### v1.0.14
+- 优化代码执行性能
 - 添加关闭调试日志
 - noLogger?: boolean
 
