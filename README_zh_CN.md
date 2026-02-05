@@ -53,7 +53,7 @@ const css = lightCSS({
   // 自定义规则
   rules: [],
   // 类名前缀
-  prefix: 'lc-',
+  prefix: 'lc-app',
   // 是否使用 innerHTML 方式插入样式
   useInnerHTML: false,
   // 是否使用默认规则

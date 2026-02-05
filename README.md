@@ -45,7 +45,7 @@ const css = lightCSS({
   // Custom rules
   rules: [],
   // Class name prefix
-  prefix: 'lc-',
+  prefix: 'lc-app',
   // Insert styles using innerHTML
   useInnerHTML: false,
   // Use default built-in rules
