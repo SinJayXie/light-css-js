@@ -3,6 +3,7 @@ import { buildStyle, createStyle } from './utils/create-style.ts';
 import { defaultRules, IRule } from './utils/rules.ts';
 import { REGEX } from './utils/regex-map.ts';
 import { Constant } from './utils/constant.ts';
+import { logger } from './utils/logger.ts';
 
 const cacheApp = new WeakSet();
 const br = Constant.NEWLINE;
@@ -10,16 +11,17 @@ const LIGHT_CSS_INSTANCE_KEY = Symbol.for(Constant.INSTANCE);
 (window as unknown as { [LIGHT_CSS_INSTANCE_KEY]: WeakSet<LightCSS> })[LIGHT_CSS_INSTANCE_KEY] = cacheApp;
 
 export interface LightCSSOptions {
-  rules?: IRule[];
-  prefix?: string;
-  useInnerHTML?: boolean;
-  defaultRules?: boolean;
-  throttleDelay?: number;
+    rules?: IRule[];
+    prefix?: string;
+    useInnerHTML?: boolean;
+    defaultRules?: boolean;
+    throttleDelay?: number;
+    noLogger?: boolean;
 }
 
 enum INSERT_MODE {
-  RULE,
-  HTML
+    RULE,
+    HTML
 }
 
 export class LightCSS {
@@ -40,7 +42,8 @@ export class LightCSS {
   constructor(opt: LightCSSOptions) {
     this.config = Object.assign<LightCSSOptions, LightCSSOptions>({
       defaultRules: true,
-      throttleDelay: 16
+      throttleDelay: 16,
+      noLogger: false
     }, opt);
     this.ob = new MutationObserver(throttleWithMerge(this.handler.bind(this), this.config.throttleDelay || 16));
     this.classMap = new Map();
@@ -55,28 +58,29 @@ export class LightCSS {
   }
 
   private addCache(arr: string[]) {
+    if (!Array.isArray(arr) || arr.length === 0) return this;
     arr.forEach(v => this.cacheClassName.add(v));
     return this;
   }
 
   /**
-   * Process newly added element nodes
-   * @param addedNodes List of nodes added to the DOM
-   * @private
-   */
+     * Process newly added element nodes
+     * @param addedNodes List of nodes added to the DOM
+     * @private
+     */
   private processAddedNodes(addedNodes: NodeList) {
     addedNodes.forEach(node => {
-      if (node instanceof HTMLElement) {
+      if (node instanceof Element && 'classList' in node) {
         this.addCache(extractClassFromDom(node));
       }
     });
   }
 
   /**
-   * Process changes to the class attribute
-   * @param mutation MutationRecord containing class attribute change info
-   * @private
-   */
+     * Process changes to the class attribute
+     * @param mutation MutationRecord containing class attribute change info
+     * @private
+     */
   private processClassPatch(mutation: MutationRecord) {
     const { target } = mutation;
     if (target.nodeType === Node.ELEMENT_NODE) {
@@ -86,17 +90,18 @@ export class LightCSS {
   }
 
   /**
-   * Generate styles from cached class names
-   * @private
-   */
+     * Generate styles from cached class names
+     * @private
+     */
   private createStyle() {
+    if (this.cacheClassName.size === 0) return;
     const lastSize = this.classMap.size;
-    const oldKeys = Array.from(this.classMap.keys());
+    const prevClassMapKeys = Array.from(this.classMap.keys());
     createStyle(Array.from(this.cacheClassName), this.rules, this.classMap);
     this.cacheClassName.clear();
     if (lastSize < this.classMap.size) {
-      const styleRules = buildStyle(this.classMap, oldKeys, this.parentClass);
-      console.log(
+      const styleRules = buildStyle(this.classMap, prevClassMapKeys, this.parentClass);
+      logger.log(
         '[LightCSS]: Add patch style %d - (%sms)',
         this.classMap.size - lastSize,
         (performance.now() - this.lastUpdateTime).toFixed(5)
@@ -107,12 +112,10 @@ export class LightCSS {
           this.style.innerHTML += styleRules.join(br) + br;
         } else {
           try {
-            styleRules.forEach(rule => {
-              this.sheet.insertRule(rule);
-            });
+            styleRules.forEach(rule => this.sheet.insertRule(rule));
           } catch (e) {
-            console.warn(`[LightCSS] Warning: call to "insertRule()" failed. Using "innerHTML" to append styles instead.`);
-            console.error(e);
+            logger.warn(`[LightCSS] Warning: call to "insertRule()" failed. Using "innerHTML" to append styles instead.`);
+            logger.error(e);
             this.style.innerHTML += styleRules.join(br); // Fallback if insertRule fails
           }
         }
@@ -127,24 +130,23 @@ export class LightCSS {
   }
 
   /**
-   * Handle MutationObserver events
-   * @param mutations Array of MutationRecords from the observer
-   * @private
-   */
+     * Handle MutationObserver events
+     * @param mutations Array of MutationRecords from the observer
+     * @private
+     */
   private handler(mutations: MutationRecord[]) {
     this.lastUpdateTime = performance.now();
-    if (mutations.length > 0) {
-      mutations.forEach(mutation => {
-        if (mutation.addedNodes.length > 0) this.processAddedNodes(mutation.addedNodes);
-        if (mutation.attributeName === 'class') this.processClassPatch(mutation);
-      });
-      this.createStyle();
-    }
+    if (mutations.length === 0) return;
+    mutations.forEach(mutation => {
+      if (mutation.addedNodes.length > 0) this.processAddedNodes(mutation.addedNodes);
+      if (mutation.attributeName === 'class') this.processClassPatch(mutation);
+    });
+    this.createStyle();
   }
 
   /**
-   * Destroy the LightCSS instance and clean up resources
-   */
+     * Destroy the LightCSS instance and clean up resources
+     */
   public destroy() {
     this.ob.disconnect();
     this.style.remove();
@@ -154,15 +156,16 @@ export class LightCSS {
   }
 
   /**
-   * Initialize the LightCSS instance
-   * @param isAppendDefault Whether to include default style rules
-   * @private
-   */
+     * Initialize the LightCSS instance
+     * @param isAppendDefault Whether to include default style rules
+     * @private
+     */
   private init(isAppendDefault?: boolean) {
     if (isAppendDefault) this.rules.push(...defaultRules());
+    if (this.config.noLogger) logger.enabled = false;
     this.style.setAttribute('type', 'text/css');
     this.style.setAttribute('data-plugin-name', Constant.LIBRARY_NAME);
-    console.log('[LightCSS] Initialized successfully | version: %s', this.version);
+    logger.log('[LightCSS] Initialized successfully | version: %s', this.version);
     document.head.appendChild(this.style);
     this.sheet = this.style.sheet!;
     this.ob.observe(document.body, {

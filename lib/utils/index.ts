@@ -1,11 +1,12 @@
 import { REGEX } from './regex-map.ts';
+import { logger } from './logger.ts';
 
 /**
  * Get all class names under a DOM element
  * @param rootDom The root DOM element
  * @returns {string[]} Returns an array of class rules
  */
-export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
+export const extractClassFromDom = (rootDom: Element): string[] => {
   const classNamesSet = new Set<string>();
 
   const rootClassNames = String(rootDom.classList.value).trim().split(REGEX.SPACE);
@@ -13,7 +14,7 @@ export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
 
   const walkDom = (node: Node) => {
     if (node.nodeType !== Node.ELEMENT_NODE) return;
-    const el = node as HTMLElement;
+    const el = node as Element;
     const childClassNames = String(el.classList.value).trim().split(REGEX.SPACE);
     childClassNames.forEach(cls => cls && classNamesSet.add(cls));
     for (let i = 0; i < el.childNodes.length; i++) {
@@ -24,7 +25,7 @@ export const extractClassFromDom = (rootDom: HTMLElement): string[] => {
   try {
     walkDom(rootDom);
   } catch {
-    console.log('[LightCSS] Skipping dom.');
+    logger.log('[LightCSS] Skipping dom.');
   }
 
   return Array.from(classNamesSet);
