@@ -219,6 +219,10 @@ MIT License
 欢迎提交 Issue 和 Pull Request 参与贡献！
 
 ## 版本历史
+
+### v1.0.15
+- 更改默认规则
+
 ### v1.0.14
 - 优化代码执行性能
 - 新增关闭调试日志的配置项（`noLogger?: boolean`）

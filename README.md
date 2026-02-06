@@ -221,6 +221,9 @@ Issues and Pull Requests are welcome!
 
 ## Version History
 
+### v1.0.15
+- Change default rules
+
 ### v1.0.14
 - Optimize code execution performance
 - Added option to turn off debug logs (`noLogger?: boolean`)
