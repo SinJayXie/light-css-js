@@ -59,68 +59,95 @@ const css = lightCSS({
 
 ## Supported Default Class Name Rules
 ### Text Styles
-- `text-[value]` - Set font size or text color
-  - `text-[16px]` - Set font size to 16px
-  - `text-[#ff0000]` - Set text color to red
-- `text-left` / `text-center` / `text-right` - Text alignment
+- `text-[value]` - Set font size, text color or text alignment
+  - `text-[16px]` - Set font size to 16px (supports valid pixel units only)
+  - `text-[#ff0000]` - Set text color to red (supports valid color values)
+  - `text-[left]` / `text-[center]` / `text-[right]` / `text-[justify]` / `text-[start]` / `text-[end]` - Set text alignment
 
-### Sizing & Spacing
-- `w-[value]` - Width
-  - `w-[100px]` - Set width to 100px
-- `h-[value]` - Height
-  - `h-[200px]` - Set height to 200px
-- `p-[value]` - Padding
+### Shadow Styles
+- `shadow-[value]-[color]` - Set box shadow (0 0 [value] [color])
+  - `shadow-[4px]-[#00000033]` - Set box shadow to `0 0 4px rgba(0, 0, 0, 0.2)` (supports valid pixel units for value and valid color values for color)
+
+### Spacing (Padding & Margin)
+- `p-[value]` / `m-[value]` - Set padding/margin (supports valid pixel units only)
   - `p-[10px]` - Set padding to 10px
-- `m-[value]` - Margin
   - `m-[10px]` - Set margin to 10px
-- `mt-[value]` / `mb-[value]` / `ml-[value]` / `mr-[value]` - Top/bottom/left/right margin
-  - `mt-[5px]` - Set top margin to 5px
+- `pl-[value]` / `pr-[value]` / `pt-[value]` / `pb-[value]` - Left/right/top/bottom padding
+  - `pt-[5px]` - Set top padding to 5px
+- `ml-[value]` / `mr-[value]` / `mt-[value]` / `mb-[value]` - Left/right/top/bottom margin
+  - `mb-[8px]` - Set bottom margin to 8px
 
-### Positioning
-- `position-[value]` - Position type
-  - `position-absolute` - Set to absolute positioning
-- `left-[value]` / `right-[value]` / `top-[value]` / `bottom-[value]` - Position offset
-  - `left-[10px]` - Set left offset to 10px
-
-### Borders & Backgrounds
-- `border-[value]` - Border style
-  - `border-[1px solid #ccc]` - Set 1px solid gray border
-- `border-radius-[value]` - Border radius
-  - `border-radius-[4px]` - Set border radius to 4px
-- `bg-[value]` - Background color
-  - `bg-[#f0f0f0]` - Set background color to light gray
-- `bg-img-[value]` - Background image
-  - `bg-img-[url("image.jpg")]` - Set background image
-- `bg-size-[value]` - Background size
-  - `bg-size-[cover]` - Set background to cover the container
-- `bg-position-[value]` - Background position
-  - `bg-position-[center]` - Center the background image
-
-### Flex Layout
-- `flex-[value]` - Flex property
+### Sizing & Positioning
+- `w-[value]` - Width (supports valid pixel units only)
+  - `w-[100px]` - Set width to 100px
+- `h-[value]` - Height (supports valid pixel units only)
+  - `h-[200px]` - Set height to 200px
+- `lh-[value]` - Line height (supports valid pixel units only)
+  - `lh-[24px]` - Set line height to 24px
+- `miw-[value]` - Min-width (supports valid pixel units only)
+  - `miw-[300px]` - Set min-width to 300px
+- `mih-[value]` - Min-height (supports valid pixel units only)
+  - `mih-[200px]` - Set min-height to 200px
+- `maw-[value]` - Max-width (supports valid pixel units only)
+  - `maw-[800px]` - Set max-width to 800px
+- `mah-[value]` - Max-height (supports valid pixel units only)
+  - `mah-[600px]` - Set max-height to 600px
+- `l-[value]` / `r-[value]` / `t-[value]` / `b-[value]` - Left/right/top/bottom offset (supports valid pixel units only)
+  - `l-[10px]` - Set left offset to 10px
+- `inset-[value]` - Inset (supports valid pixel units only)
+  - `inset-[5px]` - Set inset to 5px
+- `round-[value]` - Border radius (supports valid pixel units only)
+  - `round-[4px]` - Set border radius to 4px
+- `gap-[value]` - Gap (supports valid pixel units only)
+  - `gap-[8px]` - Set gap to 8px
+- `flex-[value]` - Flex (supports valid pixel units only)
   - `flex-[1]` - Set flex to 1
-- `justify-[value]` - justify-content
-  - `justify-center` - Horizontally center flex items
-- `align-[value]` - align-items
-  - `align-center` - Vertically center flex items
 
-### Other Common Styles
-- `display-[value]` - Display mode
-  - `display-[flex]` - Enable flex layout
-  - `display-[none]` - Hide the element
-- `opacity-[value]` - Opacity
-  - `opacity-[0.5]` - Set opacity to 50%
-- `cursor-[value]` - Cursor style
-  - `cursor-[pointer]` - Set to pointer cursor
-- `line-clamp-[value]` - Text line limit
-  - `line-clamp-[2]` - Limit text to a maximum of 2 lines
+### Display
+- `disp-[value]` - Set display mode
+  - `disp-[flex]` - Enable flex layout
+  - `disp-[none]` - Hide the element
+  - Supported values: none, block, inline, inline-block, flex, grid, inline-flex, inline-grid, table, table-cell, table-row, table-column, flow, flow-root, contents, unset
+
+### Z-index
+- `z-[value]` - Set z-index
+  - `z-[99]` - Set z-index to 99
+  - `z-[auto]` - Set z-index to auto
+  - Note: Square brackets will be automatically removed (e.g., `z-[[100]]` → `z-index: 100`)
+
+### Overflow
+- `overflow-[value]` - Set overflow
+  - `overflow-[hidden]` - Set overflow to hidden
+- `overflow-x-[value]` / `overflow-y-[value]` - Set overflow-x/overflow-y
+  - `overflow-x-[scroll]` - Set overflow-x to scroll
+  - Supported values: auto, hidden, clip, visible, scroll
+
+### Line Clamp
+- `line-clamp-[number]` - Limit text to a specific number of lines
+  - `line-clamp-[2]` - Limit text to a maximum of 2 lines (automatically sets overflow: hidden and WebKit box properties)
+
+### Background Styles
+- `bg-[value]` - Set background color (supports valid color values)
+  - `bg-[#f0f0f0]` - Set background color to light gray
+- `bg-img-[value]` - Set background image
+  - `bg-img-[url(image.jpg)]` - Set background image to image.jpg
+- `bg-clip-[value]` - Set background-clip (underscores in value are converted to spaces)
+  - `bg-clip-[content-box]` - Set background-clip to "content box"
+- `bg-origin-[value]` - Set background-origin (underscores in value are converted to spaces)
+  - `bg-origin-[padding-box]` - Set background-origin to "padding box"
+- `bg-pos-[value]` - Set background-position (underscores in value are converted to spaces)
+  - `bg-pos-[center_center]` - Set background-position to "center center"
+- `bg-repeat-[value]` - Set background-repeat (underscores in value are converted to spaces)
+  - `bg-repeat-[no-repeat]` - Set background-repeat to "no repeat"
+- `bg-size-[value]` - Set background-size (underscores in value are converted to spaces)
+  - `bg-size-[cover]` - Set background-size to cover
 
 ## Example
 ```html
-<div class="w-[200px] h-[200px] bg-[#f0f0f0] p-[20px] rounded-[8px]">
+<div class="w-[200px] h-[200px] bg-[#f0f0f0] p-[20px] round-[8px]">
   <h1 class="text-[24px] text-[#333] mb-[10px]">Hello Light CSS</h1>
   <p class="text-[14px] text-[#666] line-clamp-[2]">This is a lightweight CSS utility library that dynamically generates and applies CSS styles via class names.</p>
-  <button class="mt-[10px] px-[16px] py-[8px] bg-[#007bff] text-[#fff] rounded-[4px] hover:bg-[#0069d9]">
+  <button class="mt-[10px] pl-[16px] pr-[16px] pt-[8px] pb-[8px] bg-[#007bff] text-[#fff] round-[4px] hover:bg-[#0069d9]">
     Click Me
   </button>
 </div>
@@ -196,19 +223,18 @@ Issues and Pull Requests are welcome!
 
 ### v1.0.14
 - Optimize code execution performance
-- Added turn off debug log
-- noLogger?: boolean
+- Added option to turn off debug logs (`noLogger?: boolean`)
 
 ### v1.0.13
-- Add constants and regex constants 
+- Add constants and regex constants
 
 ### v1.0.11
 - Fix SVG element judgment error
 
 ### v1.0.10
-- Added hover|active pseudo-class support
+- Added hover/active pseudo-class support
 ```html
-<div class="color-[#333] hover:color-[red] active:color-[blue]">
+<div class="text-[#333] hover:text-[red] active:text-[blue]">
   New Hover & Active Pseudo-classes
 </div>
 ```

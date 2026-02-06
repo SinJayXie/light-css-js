@@ -25,14 +25,15 @@ export const createStyle = function(
         const val = rule.regex(formattedClass);
         if (typeof val === 'string') {
           const styleRule = rule.handler(val.trim(), [val]);
-          if (styleRule) map.set(classStr, styleRule); // Store in style cache table
+          if (styleRule) map.set(classStr, styleRule as Record<string, string>); // Store in style cache table
           break; // Process next class
         }
       } else if ((rule.regex as unknown) instanceof RegExp) { // Regular expression mode
         const match = formattedClass.match(rule.regex);
-        if (match && match[1]) {
-          const styleRule = rule.handler(match[1], match);
-          if (styleRule !== null) map.set(classStr, styleRule); // Store in style cache table
+        if (match) {
+          const filterMatch = match.filter(Boolean);
+          const styleRule = rule.handler(filterMatch[1], filterMatch);
+          if (styleRule !== null) map.set(classStr, styleRule as Record<string, string>); // Store in style cache table
           break; // Process next class
         }
       }

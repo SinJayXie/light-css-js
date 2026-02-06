@@ -1,6 +1,7 @@
 import { REGEX } from './regex-map.ts';
 import { logger } from './logger.ts';
 import { IRule } from './rules.ts';
+import { Constant } from './constant.ts';
 
 /**
  * Get all class names under a DOM element
@@ -76,4 +77,20 @@ export const throttleWithMerge = function <T extends(...args: [MutationRecord[]]
 export const rulePrioritySort = function(arr?: IRule[]) {
   if (Array.isArray(arr)) return arr.sort((a, b) => (b.priority || 0) - (a.priority || 0));
   return [];
+};
+
+export const validateColor = function(color: string) {
+  const schema = Constant.COLOR_SCHEMA;
+  if (color.startsWith('#') && [3, 4, 6, 8].includes(color.substring(1).length)) {
+    return color;
+  } else if (color.startsWith('0x') && [3, 4, 6, 8].includes(color.substring(2).length)) {
+    return '#' + color.substring(2);
+  } else if (schema.has(color.toLowerCase())) {
+    return color.toLowerCase();
+  }
+  return null;
+};
+
+export const validatePixelUnit = function(value: string) {
+  return REGEX.PIXEL_UNIT.test(value);
 };
