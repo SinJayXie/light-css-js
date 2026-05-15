@@ -1,4 +1,4 @@
-import { LightCSS, LightCSSOptions } from './core.ts';
+import { LightCSS, LightCSSOptions } from './core';
 
 export function lightCSS(opt?: LightCSSOptions) {
   return new LightCSS(opt || {});

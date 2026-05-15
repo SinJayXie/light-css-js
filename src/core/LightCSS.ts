@@ -1,22 +1,14 @@
-import { extractClassFromDom, rulePrioritySort, throttleWithMerge } from './utils';
-import { buildStyle, createStyle } from './utils/create-style.ts';
-import { defaultRules, IRule } from './utils/rules.ts';
-import { Constant } from './utils/constant.ts';
-import { logger } from './utils/logger.ts';
+import { extractClassFromDom, throttleWithMerge } from '../utils';
+import { buildStyle, createStyle } from '../utils';
+import { defaultRules, rulePrioritySort } from '../rules';
+import { Constant } from '../constants';
+import { logger } from '../utils';
+import type { LightCSSOptions } from './types';
 
 const cacheApp = new WeakSet();
 const br = Constant.NEWLINE;
 const LIGHT_CSS_INSTANCE_KEY = Symbol.for(Constant.INSTANCE);
 (window as unknown as { [LIGHT_CSS_INSTANCE_KEY]: WeakSet<LightCSS> })[LIGHT_CSS_INSTANCE_KEY] = cacheApp;
-
-export interface LightCSSOptions {
-    rules?: IRule[];
-    prefix?: string;
-    useInnerHTML?: boolean;
-    defaultRules?: boolean;
-    throttleDelay?: number;
-    noLogger?: boolean;
-}
 
 enum INSERT_MODE {
     RULE,
@@ -27,7 +19,7 @@ export class LightCSS {
   private readonly ob: MutationObserver;
   private readonly classMap: Map<string, Record<string, string>>;
   private readonly style: HTMLStyleElement;
-  private readonly rules: IRule[] = [];
+  private readonly rules: ReturnType<typeof rulePrioritySort> = [];
   private readonly parentClass: string;
   private readonly cacheClassName: Set<string>;
   private readonly config: LightCSSOptions;
@@ -50,7 +42,7 @@ export class LightCSS {
     this.sheet = this.createStyleSheet();
     this.cacheClassName = new Set();
     this.insertMode = this.config.useInnerHTML ? INSERT_MODE.HTML : INSERT_MODE.RULE;
-    this.rules = [...rulePrioritySort(this.config.rules)]; // Import user-defined rules
+    this.rules.push(...rulePrioritySort(this.config.rules));
     this.parentClass = this.config.prefix || '';
     this.lastUpdateTime = performance.now();
     this.init(this.config.defaultRules);
@@ -75,11 +67,6 @@ export class LightCSS {
     }
   }
 
-  /**
-     * Process newly added element nodes
-     * @param addedNodes List of nodes added to the DOM
-     * @private
-     */
   private processAddedNodes(addedNodes: NodeList) {
     addedNodes.forEach(node => {
       if (node instanceof Element && 'classList' in node) {
@@ -88,11 +75,6 @@ export class LightCSS {
     });
   }
 
-  /**
-     * Process changes to the class attribute
-     * @param mutation MutationRecord containing class attribute change info
-     * @private
-     */
   private processClassPatch(mutation: MutationRecord) {
     const { target } = mutation;
     if (target.nodeType === Node.ELEMENT_NODE) {
@@ -101,34 +83,37 @@ export class LightCSS {
     }
   }
 
-  /**
-     * Generate styles from cached class names
-     * @private
-     */
-  private createStyle() {
+  private generateStyle() {
     if (this.cacheClassName.size === 0) return;
     const lastSize = this.classMap.size;
     const prevClassMapKeys = new Set(this.classMap.keys());
     createStyle(this.cacheClassName, this.rules, this.classMap);
+
     this.cacheClassName.clear();
+
     if (lastSize < this.classMap.size) {
-      const styleRules = buildStyle(this.classMap, prevClassMapKeys, this.parentClass);
+      const { styleRules, injectCss } = buildStyle(this.classMap, prevClassMapKeys, this.parentClass);
       logger.log(
         '[LightCSS]: Add patch style %d - (%sms)',
         this.classMap.size - lastSize,
         (performance.now() - this.lastUpdateTime).toFixed(5)
       );
 
+      const allRules = [...styleRules];
+      if (injectCss.length > 0) {
+        allRules.unshift(...injectCss);
+      }
+
       const taskCall = () => {
         if (this.insertMode === INSERT_MODE.HTML) {
-          this.style.innerHTML += styleRules.join(br) + br;
+          this.style.innerHTML += allRules.join(br) + br;
         } else {
           try {
-            styleRules.forEach(rule => this.sheet.insertRule(rule));
+            allRules.forEach(rule => this.sheet.insertRule(rule));
           } catch (e) {
             logger.warn(`[LightCSS] Warning: call to "insertRule()" failed. Using "innerHTML" to append styles instead.`);
             logger.error(e);
-            this.style.innerHTML += styleRules.join(br); // Fallback if insertRule fails
+            this.style.innerHTML += allRules.join(br);
           }
         }
       };
@@ -141,11 +126,6 @@ export class LightCSS {
     }
   }
 
-  /**
-     * Handle MutationObserver events
-     * @param mutations Array of MutationRecords from the observer
-     * @private
-     */
   private handler(mutations: MutationRecord[]) {
     this.lastUpdateTime = performance.now();
     if (mutations.length === 0) return;
@@ -153,12 +133,9 @@ export class LightCSS {
       if (mutation.addedNodes.length > 0) this.processAddedNodes(mutation.addedNodes);
       if (mutation.attributeName === 'class') this.processClassPatch(mutation);
     });
-    this.createStyle();
+    this.generateStyle();
   }
 
-  /**
-     * Destroy the LightCSS instance and clean up resources
-     */
   public destroy() {
     this.ob.disconnect();
     this.style.remove();
@@ -167,11 +144,6 @@ export class LightCSS {
     cacheApp.delete(this);
   }
 
-  /**
-     * Initialize the LightCSS instance
-     * @param isAppendDefault Whether to include default style rules
-     * @private
-     */
   private init(isAppendDefault?: boolean) {
     if (isAppendDefault) this.rules.push(...defaultRules());
     if (this.config.noLogger) logger.enabled = false;

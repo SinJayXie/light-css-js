@@ -1,4 +1,3 @@
-
 export const REGEX = {
   SELECTOR: /^(hover|active):/,
   SPACE: /\s+/,

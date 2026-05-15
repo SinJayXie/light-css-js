@@ -1,8 +1,9 @@
 {
   "name": "light-css-js",
   "private": false,
-  "version": "1.0.16",
+  "version": "1.0.17",
   "type": "module",
+  "sideEffects": false,
   "files": [
     "dist",
     "README.md",
@@ -18,9 +19,9 @@
   "homepage": "https://github.com/sinjayxie/light-css-js",
   "main": "./dist/light-css.umd.js",
   "module": "./dist/light-css.es.js",
-  "types": "./index.d.ts",
+  "types": "dist/index.d.ts",
   "exports": {
-    "types": "./index.d.ts",
+    "types": "./dist/index.d.ts",
     "import": "./dist/light-css.es.js",
     "require": "./dist/light-css.umd.js"
   },

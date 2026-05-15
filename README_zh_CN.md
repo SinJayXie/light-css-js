@@ -1,257 +1,335 @@
-# Light CSS 中文文档
-Light CSS 是一款轻量级的 CSS 工具库，可通过类名动态生成并应用 CSS 样式。它提供类 Tailwind CSS 的开发体验，同时更轻量、更灵活。
+# Light CSS
+[![npm 版本](https://img.shields.io/npm/v/light-css-js.svg)](https://www.npmjs.com/package/light-css-js)
+[![开源协议](https://img.shields.io/npm/l/light-css-js)](https://github.com/sinjayxie/light-css-js/blob/main/LICENSE)
+[![包体积](https://img.shields.io/bundlephobia/minzip/light-css-js)](https://bundlephobia.com/package/light-css-js)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)](https://www.typescriptlang.org/)
 
-## 核心特性
-- **极致轻量**：核心代码仅包含必要功能，体积小巧
-- **动态生成**：无需预编译，根据类名实时生成 CSS 样式
-- **灵活配置**：支持自定义规则、自定义类名前缀
+一款轻量级 CSS 工具库，可通过类名动态生成并应用 CSS 样式。开发体验对标 Tailwind CSS、UnoCSS，同时更轻量化、灵活。
 
-## 项目仓库
-[light-css-js](https://github.com/sinjayxie/light-css-js.git)
+## ✨ 特性
+- **零依赖**：无需引入任何外部依赖包
+- **核心精简**：仅保留核心功能，代码体积极小
+- **动态生成**：根据类名实时生成样式，无需预编译
+- **灵活配置**：支持自定义样式规则、类名前缀
+- **TypeScript 友好**：内置完整类型定义，提升开发体验
+- **性能优化**：采用节流函数 + 元素观察器，高效生成样式
+- **浏览器兼容**：支持所有现代浏览器
 
-## 安装方式
+## 📦 安装
 ```bash
-# 使用 npm
+# npm 安装
 npm install light-css-js
 
-# 使用 yarn
+# yarn 安装
 yarn add light-css-js
 
-# 使用 pnpm
+# pnpm 安装
 pnpm add light-css-js
+
+# CDN 直接引入
+<script src="https://cdn.jsdelivr.net/npm/light-css-js/dist/light-css.umd.js"></script>
 ```
 
-## 快速开始
+## 🚀 快速上手
 ### 基础使用
-```javascript
+```typescript
 import { lightCSS } from 'light-css-js';
 
 // 初始化
 const css = lightCSS();
 
-// 如需销毁实例（清理资源）
-// css.destroy();
+// 销毁实例，清理资源（按需调用）
+css.destroy();
 ```
 
-### 配置项说明
-```javascript
-import { lightCSS } from 'light-css-js';
+### 配置项
+```typescript
+import { lightCSS, LightCSSOptions } from 'light-css-js';
 
-// CDN 引入方式调用
-// lightCSS.lightCSS({...})
-
-// 带配置初始化
 const css = lightCSS({
-  // 自定义规则数组
+  // 自定义样式规则数组
   rules: [],
-  // 类名前缀
+  
+  // 类名前缀（默认无）
   prefix: 'lc-app',
-  // 是否使用 innerHTML 插入样式
+  
+  // 是否通过 innerHTML 注入样式（默认 false）
   useInnerHTML: false,
-  // 是否启用内置默认规则
+  
+  // 是否启用内置默认样式规则（默认 true）
   defaultRules: true,
-  // 样式生成的节流延迟（毫秒）
+  
+  // 样式生成节流延迟，单位毫秒（默认 16）
   throttleDelay: 16,
-  // 关闭日志输出
+  
+  // 关闭日志输出（默认 false）
   noLogger: false,
 });
 ```
 
-## 支持的默认类名规则
-### 文本样式
-- `text-[值]` - 设置字体大小、文本颜色或文本对齐方式
-  - `text-[16px]` - 设置字体大小为 16px（仅支持合法像素单位）
-  - `text-[#ff0000]` - 设置文本颜色为红色（支持所有合法颜色值）
-  - `text-[left]` / `text-[center]` / `text-[right]` / `text-[justify]` / `text-[start]` / `text-[end]` - 设置文本对齐方式
+## 📚 内置默认类名规则
+### 文字样式
+#### 文字颜色
+- `text-[颜色值]`：设置文字颜色
+  - `text-[#ff0000]`：自定义十六进制颜色
+  - `text-[red]`：基础颜色名
+  - `text-[slate-500]`：适配 Tailwind 色系
+- `text-transparent`：透明文字
+- `text-current`：继承当前文字颜色
 
-### 阴影样式
-- `shadow-[值]-[颜色]` - 设置盒子阴影（格式：0 0 [值] [颜色]）
-  - `shadow-[4px]-[#00000033]` - 设置盒子阴影为 `0 0 4px rgba(0, 0, 0, 0.2)`（值支持合法像素单位，颜色支持合法颜色值）
+#### 字体大小
+- `text-[尺寸值]`：自定义字体大小
+  - `text-[16px]`：16像素字体
+- `text-xs` / `text-sm` / `text-base` / `text-lg` / `text-xl` / `text-2xl` / `text-3xl`：预设字号
+
+#### 字体粗细
+`font-thin` / `font-extralight` / `font-light` / `font-normal` / `font-medium` / `font-semibold` / `font-bold` / `font-extrabold` / `font-black`
+
+#### 行高
+`leading-none` / `leading-tighter` / `leading-tight` / `leading-normal` / `leading-relaxed` / `leading-loose`
+
+#### 文字装饰
+- 下划线/删除线：`underline` / `overline` / `line-through` / `no-underline`
+- 字体样式：`italic` / `oblique` / `normal`
+- 大小写：`uppercase` / `lowercase` / `capitalize` / `normal-case`
 
 ### 间距（内边距 & 外边距）
-- `p-[值]` / `m-[值]` - 设置整体内边距/外边距（仅支持合法像素单位）
-  - `p-[10px]` - 设置内边距为 10px
-  - `m-[10px]` - 设置外边距为 10px
-- `pl-[值]` / `pr-[值]` / `pt-[值]` / `pb-[值]` - 左/右/上/下内边距
-  - `pt-[5px]` - 设置顶部内边距为 5px
-- `ml-[值]` / `mr-[值]` / `mt-[值]` / `mb-[值]` - 左/右/上/下外边距
-  - `mb-[8px]` - 设置底部外边距为 8px
+#### 基础间距
+- `p-[值]` / `m-[值]`：内边距/外边距（例：`p-[10px]`、`m-[10px]`）
+- `p-1` / `p-2` / `p-3` / `p-4`……：预设间距（步长 0.25rem）
 
-### 尺寸与定位
-- `w-[值]` - 宽度（仅支持合法像素单位）
-  - `w-[100px]` - 设置宽度为 100px
-- `h-[值]` - 高度（仅支持合法像素单位）
-  - `h-[200px]` - 设置高度为 200px
-- `lh-[值]` - 行高（仅支持合法像素单位）
-  - `lh-[24px]` - 设置行高为 24px
-- `miw-[值]` - 最小宽度（仅支持合法像素单位）
-  - `miw-[300px]` - 设置最小宽度为 300px
-- `mih-[值]` - 最小高度（仅支持合法像素单位）
-  - `mih-[200px]` - 设置最小高度为 200px
-- `maw-[值]` - 最大宽度（仅支持合法像素单位）
-  - `maw-[800px]` - 设置最大宽度为 800px
-- `mah-[值]` - 最大高度（仅支持合法像素单位）
-  - `mah-[600px]` - 设置最大高度为 600px
-- `l-[值]` / `r-[值]` / `t-[值]` / `b-[值]` - 左/右/上/下偏移量（仅支持合法像素单位）
-  - `l-[10px]` - 设置左偏移为 10px
-- `inset-[值]` - 内偏移（仅支持合法像素单位）
-  - `inset-[5px]` - 设置内偏移为 5px
-- `round-[值]` - 边框圆角（仅支持合法像素单位）
-  - `round-[4px]` - 设置边框圆角为 4px
-- `gap-[值]` - 间距（仅支持合法像素单位）
-  - `gap-[8px]` - 设置间距为 8px
-- `flex-[值]` - 弹性布局占比
-  - `flex-[1]` - 设置 flex 为 1
+#### 方向内边距
+- `pt-[值]` / `pr-[值]` / `pb-[值]` / `pl-[值]`：上/右/下/左内边距
+- `pt-1` / `pr-2` / `pb-3` / `pl-4`：预设方向内边距
 
-### 显示模式
-- `disp-[值]` - 设置元素显示模式
-  - `disp-[flex]` - 启用弹性布局
-  - `disp-[none]` - 隐藏元素
-  - 支持的值：none、block、inline、inline-block、flex、grid、inline-flex、inline-grid、table、table-cell、table-row、table-column、flow、flow-root、contents、unset
+#### 方向外边距
+- `mt-[值]` / `mr-[值]` / `mb-[值]` / `ml-[值]`：上/右/下/左外边距
+- `mt-1` / `mr-2` / `mb-3` / `ml-4`：预设方向外边距
 
-### 层级（Z-index）
-- `z-[值]` - 设置元素层级
-  - `z-[99]` - 设置 z-index 为 99
-  - `z-[auto]` - 设置 z-index 为 auto
-  - 注意：方括号会被自动移除（例如 `z-[[100]]` → `z-index: 100`）
+#### 横向/纵向间距
+- `px-[值]`：水平内边距（左右）
+- `py-[值]`：垂直内边距（上下）
+- `mx-[值]`：水平外边距
+- `my-[值]`：垂直外边距
 
-### 溢出处理
-- `overflow-[值]` - 设置整体溢出行为
-  - `overflow-[hidden]` - 隐藏溢出内容
-- `overflow-x-[值]` / `overflow-y-[值]` - 设置水平/垂直方向溢出行为
-  - `overflow-x-[scroll]` - 水平方向显示滚动条
-  - 支持的值：auto、hidden、clip、visible、scroll
+### 尺寸样式
+- `w-[值]` / `h-[值]`：宽/高（例：`w-[100px]`、`h-[200px]`）
+- `miw-[值]` / `maw-[值]`：最小宽度/最大宽度
+- `mih-[值]` / `mah-[值]`：最小高度/最大高度
+- `lh-[值]`：行高
+- `inset-[值]`：定位内边距（绝对定位用）
+- `l-[值]` / `r-[值]` / `t-[值]` / `b-[值]`：左/右/上/下偏移量
 
-### 文本行数限制
-- `line-clamp-[数字]` - 限制文本显示的最大行数
-  - `line-clamp-[2]` - 限制文本最多显示 2 行（自动设置 overflow: hidden 及 WebKit 盒子相关属性）
+### 边框样式
+- `b-[宽度]` / `border-[宽度]`：边框宽度（例：`b-2`、`b-[4px]`）
+- `b-[颜色]` / `border-[颜色]`：边框颜色（例：`b-red`、`b-[#ff0000]`）
+- `b-[宽度]-[颜色]`：同时设置边框宽+色（例：`b-2-red`、`b-[4px]-[#ff0000]`）
+- 方向边框：`b-t-[值]` / `b-r-[值]` / `b-b-[值]` / `b-l-[值]`
+- 边框样式：`b-solid` / `b-dashed` / `b-dotted` / `b-double` / `b-none`
+
+### 圆角
+- `round-[值]`：自定义圆角（例：`round-[4px]`）
+- `rounded` / `rounded-none` / `rounded-sm` / `rounded-md` / `rounded-lg` / `rounded-xl` / `rounded-2xl` / `rounded-3xl` / `rounded-full`：预设圆角
+- 方向圆角：`rounded-tl-[值]` / `rounded-tr-[值]` / `rounded-bl-[值]` / `rounded-br-[值]`
 
 ### 背景样式
-- `bg-[值]` - 设置背景颜色（支持所有合法颜色值）
-  - `bg-[#f0f0f0]` - 设置背景色为浅灰色
-- `bg-img-[值]` - 设置背景图片
-  - `bg-img-[url(image.jpg)]` - 设置背景图片为 image.jpg
-- `bg-clip-[值]` - 设置背景裁剪（值中的下划线会被转换为空格）
-  - `bg-clip-[content-box]` - 设置 background-clip 为 "content box"
-- `bg-origin-[值]` - 设置背景原点（值中的下划线会被转换为空格）
-  - `bg-origin-[padding-box]` - 设置 background-origin 为 "padding box"
-- `bg-pos-[值]` - 设置背景位置（值中的下划线会被转换为空格）
-  - `bg-pos-[center_center]` - 设置 background-position 为 "center center"
-- `bg-repeat-[值]` - 设置背景重复方式（值中的下划线会被转换为空格）
-  - `bg-repeat-[no-repeat]` - 设置 background-repeat 为 "no repeat"
-- `bg-size-[值]` - 设置背景尺寸（值中的下划线会被转换为空格）
-  - `bg-size-[cover]` - 设置 background-size 为 cover
+- `bg-[颜色]`：背景色（例：`bg-[#f0f0f0]`、`bg-red-500`）
+- `bg-img-[url]`：背景图片（例：`bg-img-[url(image.jpg)]`）
+- `bg-clip-[值]`：背景裁剪方式（例：`bg-clip-[content-box]`）
+- `bg-origin-[值]`：背景定位原点（例：`bg-origin-[padding-box]`）
+- `bg-pos-[值]`：背景位置（例：`bg-pos-[center_center]`）
+- `bg-repeat-[值]`：背景重复方式（例：`bg-repeat-[no-repeat]`）
+- `bg-size-[值]`：背景尺寸（例：`bg-size-[cover]`）
 
-## 完整示例
-```html
-<div class="w-[200px] h-[200px] bg-[#f0f0f0] p-[20px] round-[8px]">
-  <h1 class="text-[24px] text-[#333] mb-[10px]">Hello Light CSS</h1>
-  <p class="text-[14px] text-[#666] line-clamp-[2]">这是一款轻量级 CSS 工具库，可通过类名动态生成并应用 CSS 样式。</p>
-  <button class="mt-[10px] pl-[16px] pr-[16px] pt-[8px] pb-[8px] bg-[#007bff] text-[#fff] round-[4px] hover:bg-[#0069d9]">
-    点击我
-  </button>
-</div>
-```
+#### 渐变背景
+- `bg-gradient-to-(t|r|b|l|tr|tl|br|bl)`：渐变方向（上/右/下/左/右上/左上/右下/左下）
+- `from-[颜色]-[色阶]`：渐变起始色（例：`from-indigo-500`）
+- `via-[颜色]-[色阶]`：渐变中间色（例：`via-purple-500`）
+- `to-[颜色]-[色阶]`：渐变结束色（例：`to-pink-500`）
 
-## 自定义规则
-你可以通过配置项添加自定义规则，扩展 Light CSS 的能力：
-```javascript
-import { lightCSS } from 'light-css-js';
+### 弹性布局（Flex）
+- `flex-[值]`：flex 属性值（例：`flex-[1]`、`flex-[none]`）
+- 排列方向：`flex-row` / `flex-col` / `flex-row-reverse` / `flex-col-reverse`
+- 换行规则：`flex-wrap` / `flex-nowrap` / `flex-wrap-reverse`
+- 伸缩属性：`flex-grow` / `flex-shrink` / `flex-0`
+- 主轴对齐：`justify-start` / `justify-end` / `justify-center` / `justify-between` / `justify-around` / `justify-evenly`
+- 交叉轴对齐：`items-start` / `items-end` / `items-center` / `items-baseline` / `items-stretch`
+- 自身对齐：`self-start` / `self-end` / `self-center` / `self-baseline` / `self-stretch`
+- 多行对齐：`content-start` / `content-end` / `content-center` / `content-between` / `content-around` / `content-evenly`
+- 排序：`order-[数字]` / `order-first` / `order-last`
 
-const css = lightCSS({
-  rules: [
-    {
-      // 自定义规则：color-[值]
-      regex: /^color-\[(.*)]$/, // 支持函数 (classStr: string) => Boolean | 匹配字符串（会作为 handler 的第一个参数传入）
-      handler(_, match) {
-        const val = match[1];
-        return {
-          'color': val
-        };
-      }
-    }
-  ]
-});
-```
+### 网格布局（Grid）
+- `grid-cols-[数字]`：网格列数（例：`grid-cols-3`）
+- `grid-rows-[数字]`：网格行数（例：`grid-rows-2`）
+- `col-span-[数字]` / `col-span-auto`：列跨域
+- `row-span-[数字]` / `row-span-auto`：行跨域
+- `col-start-[数字]` / `col-end-[数字]`：列起始/结束位置
+- `row-start-[数字]` / `row-end-[数字]`：行起始/结束位置
 
-## API 文档
-### lightCSS 函数
-创建并返回 LightCSS 实例。
+### 定位
+- `pos-[值]` / `position-[值]`：定位方式
+  - `pos-static` / `pos-relative` / `pos-absolute` / `pos-fixed` / `pos-sticky`
+- `top-[值]` / `right-[值]` / `bottom-[值]` / `left-[值]`：定位偏移量
 
-**参数**：
-- `options`（可选）：配置对象
-  - `rules`（可选）：自定义规则数组
-  - `prefix`（可选）：类名前缀
-  - `useInnerHTML`（可选）：是否使用 innerHTML 插入样式
-  - `defaultRules`（可选）：是否启用内置默认规则
-  - `noLogger`（可选）：是否关闭日志输出
+### 显示模式
+- `disp-[值]`：自定义显示类型（例：`disp-[flex]`、`disp-[none]`）
+- 预设值：`block` / `inline` / `inline-block` / `flex` / `inline-flex` / `grid` / `inline-grid` / `none`
 
-**返回值**：
-- LightCSS 实例
+### 层级（Z-index）
+- `z-[值]`：层级值（例：`z-[99]`）
+- `z-auto`：自动层级
+
+### 溢出处理
+- `overflow-[值]`：整体溢出方式（例：`overflow-[hidden]`）
+- `overflow-x-[值]` / `overflow-y-[值]`：横向/纵向溢出
+- 可选值：`auto` / `hidden` / `clip` / `visible` / `scroll`
+
+### 文字行数截断
+- `line-clamp-[数字]`：限制文字行数（例：`line-clamp-[2]`）
+
+### 阴影
+- `shadow-[尺寸]-[颜色]`：自定义阴影（例：`shadow-[4px]-[#00000033]`）
+- 预设阴影：`shadow-sm` / `shadow-md` / `shadow-lg` / `shadow-xl` / `shadow-2xl` / `shadow-3xl`
+
+### 间距间隙（Gap）
+- `gap-[值]`：网格/弹性布局间隙（例：`gap-[8px]`）
+- `gap-x-[值]` / `gap-y-[值]`：横向/纵向间隙（例：`gap-x-[16px]`、`gap-y-[8px]`）
+
+### 动画
+- 预设动画：`animate-spin` / `animate-pulse` / `animate-bounce` / `animate-shake` / `animate-wiggle` / `animate-ping`
+- `animate-[自定义动画]`：自定义动画
+- `duration-[毫秒]`：动画时长（例：`duration-[500]`）
+- `transition-[属性]`：过渡属性（例：`transition-transform`）
+
+### 变形变换
+- `scale-[值]` / `scale-x-[值]` / `scale-y-[值]`：缩放
+- `translate-[值]` / `translate-x-[值]` / `translate-y-[值]`：位移
+- `rotate-[值]` / `rotate-x-[值]` / `rotate-y-[值]`：旋转
+
+### 特效样式
+- `opacity-[值]`：透明度（例：`opacity-[80]` → 0.8）
+- `cursor-[值]`：鼠标样式（例：`cursor-pointer`）
+- `select-[值]`：文字选中方式（例：`select-none`）
+- `pointer-events-[值]`：鼠标事件响应（例：`pointer-events-none`）
+- `resize-[值]`：元素可调整大小（例：`resize-both`）
+- `contain-[值]`：布局约束（例：`contain-strict`）
+- `will-change-[值]`：浏览器渲染优化（例：`will-change-transform`）
+
+### 宽高比
+- `aspect-auto` / `aspect-square` / `aspect-video`：预设比例
+- `aspect-[比例]`：自定义比例（例：`aspect-[16/9]`）
+
+## 📖 API 文档
+### `lightCSS(options?: LightCSSOptions)`
+创建并返回 LightCSS 实例
+
+**参数说明**
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `rules` | `IRule[]` | `[]` | 自定义样式规则数组 |
+| `prefix` | `string` | `''` | 类名前缀 |
+| `useInnerHTML` | `boolean` | `false` | 是否通过 innerHTML 注入样式 |
+| `defaultRules` | `boolean` | `true` | 是否启用内置默认规则 |
+| `throttleDelay` | `number` | `16` | 样式生成节流延迟（毫秒） |
+| `noLogger` | `boolean` | `false` | 关闭日志输出 |
+
+**返回值**：LightCSS 实例
 
 ### LightCSS 类
-#### 实例方法
-- `destroy()`: 销毁实例并清理所有关联资源
+#### 方法
+- `destroy()`：销毁实例，清理所有关联资源
 
-## 浏览器兼容性
-支持所有现代浏览器：
-- Chrome
-- Firefox
-- Safari
-- Edge
+## 📂 项目目录结构
+```
+light-css/
+├── src/
+│   ├── core/          # 核心类（LightCSS 等）
+│   ├── rules/         # 样式规则定义与工具
+│   ├── utils/         # 工具函数
+│   ├── constants.ts   # 项目常量
+│   └── index.ts       # 入口文件
+├── examples/          # 使用示例
+├── dist/              # 编译打包产物
+├── package.json
+└── vite.config.ts
+```
 
-## 本地开发
+## 🛠️ 开发调试
 ```bash
 # 安装依赖
 pnpm install
 
-# 启动开发服务器
+# 启动开发服务
 pnpm run dev
 
-# 构建生产包
+# 生产打包
 pnpm run build
+
+# 代码格式检查
+pnpm run lint
 ```
 
-## 许可证
-MIT License
+## 🌐 浏览器兼容
+支持所有主流现代浏览器：
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
 
-## 贡献指南
-欢迎提交 Issue 和 Pull Request 参与贡献！
+## 📄 开源协议
+MIT 许可证
 
-## 版本历史
+## 🤝 贡献指南
+欢迎提交 Issue 和 Pull Request！
+
+## 🔖 版本更新记录
+### v1.0.17（当前版本）
+- 优化 CSSStyleSheet 处理逻辑，兼容兜底 innerHTML 注入方式
+- 优化节流逻辑，提升样式生成性能
 
 ### v1.0.15
-- 更改默认规则
+- 调整内置默认样式规则
 
 ### v1.0.14
 - 优化代码执行性能
-- 新增关闭调试日志的配置项（`noLogger?: boolean`）
+- 新增关闭调试日志配置项（`noLogger?: boolean`）
 
 ### v1.0.13
-- 新增常量和正则常量
+- 新增常量与正则常量
 
 ### v1.0.11
-- 修复 SVG 元素判断错误问题
+- 修复 SVG 元素判断错误
 
 ### v1.0.10
 - 新增 hover/active 伪类支持
-```html
-<div class="text-[#333] hover:text-[red] active:text-[blue]">
-  新增伪类支持示例
-</div>
-```
 
 ### v1.0.8
-- 为样式生成添加节流处理，新增配置项 `throttleDelay: number`
+- 新增样式生成节流处理，支持 `throttleDelay` 配置
 
 ### v1.0.7
-- 新增伪类选择器 `hover:规则` 和 `active:规则`（例如 `hover:text-[red]`、`active:text-[green]`）
+- 新增伪类选择器：`hover:规则`、`active:规则`
 
 ### v1.0.5
-- 更新文档并优化已知问题
+- 更新文档，优化已知问题
 
 ### v1.0.0
-- 初始版本发布
-- 实现基础的类名转 CSS 功能
-- 支持多种常用样式规则
+- 首次发布
+- 实现基础类名转 CSS 功能
+- 支持常用样式规则
 - 提供 TypeScript 类型定义
+
+## 💡 使用示例
+更多示例可查看 [examples 目录](./examples/main.ts)
+```html
+<div class="w-[200px] h-[200px] bg-[#f0f0f0] p-[20px] round-[8px]">
+  <h1 class="text-[24px] text-[#333] mb-[10px]">你好 Light CSS</h1>
+  <p class="text-[14px] text-[#666] line-clamp-[2]">
+    一款轻量级 CSS 工具库，通过类名动态生成并应用样式。
+  </p>
+  <button class="mt-[10px] pl-[16px] pr-[16px] pt-[8px] pb-[8px] 
+      bg-[#007bff] text-[#fff] round-[4px] hover:bg-[#0069d9]">
+    点击我
+  </button>
+</div>
+```

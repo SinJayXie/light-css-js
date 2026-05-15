@@ -1,4 +1,3 @@
-
 export class Logger {
   public enabled: boolean = true;
   log(log: unknown, ...args: unknown[]) {

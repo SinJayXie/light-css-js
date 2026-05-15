@@ -1,17 +1,11 @@
-import { IRule } from './rules.ts';
-import { escapeCssSpecialChars, getSelector } from './index.ts';
-import { REGEX } from './regex-map.ts';
+import type { IRule } from '../rules';
+import { escapeCssSpecialChars, getSelector } from './dom';
+import { REGEX } from './regex';
 
 const formatClassName = function(str: string) {
   return str.replace(REGEX.SELECTOR, '').trim();
 };
 
-/**
- * Create a MAP of style rule objects
- * @param classList List of class names to process
- * @param rules Array of style rule definitions (IRule)
- * @param map Cache map for storing style rule objects
- */
 export const createStyle = function(
   classList: Set<string> = new Set(),
   rules: IRule[] = [],
@@ -19,22 +13,22 @@ export const createStyle = function(
 ) {
   classList.forEach(classStr => {
     const formattedClass = formatClassName(classStr);
-    if (map.has(classStr)) return; // Skip if the style cache table already has the entry
+    if (map.has(classStr)) return;
     for (const rule of rules) {
-      if (typeof rule.regex === 'function') { // regex can also be a function
+      if (typeof rule.regex === 'function') {
         const val = rule.regex(formattedClass);
         if (typeof val === 'string') {
           const styleRule = rule.handler(val.trim(), [val]);
-          if (styleRule) map.set(classStr, styleRule as Record<string, string>); // Store in style cache table
-          break; // Process next class
+          if (styleRule) map.set(classStr, styleRule as Record<string, string>);
+          break;
         }
-      } else if ((rule.regex as unknown) instanceof RegExp) { // Regular expression mode
+      } else if ((rule.regex as unknown) instanceof RegExp) {
         const match = formattedClass.match(rule.regex);
         if (match) {
           const filterMatch = match.filter(Boolean);
           const styleRule = rule.handler(filterMatch[1], filterMatch);
-          if (styleRule !== null) map.set(classStr, styleRule as Record<string, string>); // Store in style cache table
-          break; // Process next class
+          if (styleRule !== null) map.set(classStr, styleRule as Record<string, string>);
+          break;
         }
       }
     }
@@ -43,34 +37,33 @@ export const createStyle = function(
   return map;
 };
 
-/**
- * Build new style rules
- * @param map Cache map containing style rule objects
- * @param oldKeys List of existing class keys to skip
- * @param prefix Prefix for generated CSS selectors
- */
 export const buildStyle = function(
   map: Map<string, Record<string, string>> = new Map(),
   oldKeys: Set<string> = new Set(),
   prefix: string = ''
 ) {
   const styleText: string[] = [];
+  const injectCss: string[] = [];
   const prefixSelector = prefix ? `.${prefix} ` : '';
 
   map.forEach((styleConfig, key) => {
     if (oldKeys.has(key)) return;
+
+    if (styleConfig._injectCss) {
+      injectCss.push(styleConfig._injectCss);
+      delete styleConfig._injectCss;
+    }
+
     const hasChild = !!styleConfig.child;
 
-    // Escape special CSS characters like [, ], # that cannot be directly recognized by CSS
     const escapedClassName = escapeCssSpecialChars(key);
-    // Splice prefix -> .prefix .text-[16px] { ... }
     const hasSelector = REGEX.SELECTOR.test(key);
     const baseSelector = `${prefixSelector}.${escapedClassName}${hasSelector ? getSelector(key) : ''}`;
 
-    const styleProperties = Object.entries(styleConfig)
-      .filter(([key]) => key !== 'child')
-      .map(([key, value]) => `${key}:${value};`)
-      .join('');
+    let styleProperties = '';
+    for (const [prop, value] of Object.entries(styleConfig)) {
+      if (prop !== 'child' && prop !== '_injectCss') styleProperties += `${prop}:${value};`;
+    }
     styleText.push(`${baseSelector}{${styleProperties}}`);
     if (hasChild) {
       const [childEl, childStyle] = styleConfig.child.split('{').map(s => s.trim().replace('}', ''));
@@ -79,5 +72,5 @@ export const buildStyle = function(
       }
     }
   });
-  return styleText;
+  return { styleRules: styleText, injectCss };
 };
