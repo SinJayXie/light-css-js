@@ -29,10 +29,10 @@ export class LightCSS {
   private readonly style: HTMLStyleElement;
   private readonly rules: IRule[] = [];
   private readonly parentClass: string;
-  private readonly insertMode: number;
   private readonly cacheClassName: Set<string>;
   private readonly config: LightCSSOptions;
 
+  private insertMode: number;
   private sheet: CSSStyleSheet;
   private lastUpdateTime: number;
 
@@ -47,7 +47,7 @@ export class LightCSS {
     this.ob = new MutationObserver(throttleWithMerge(this.handler.bind(this), this.config.throttleDelay || 16));
     this.classMap = new Map();
     this.style = document.createElement('style');
-    this.sheet = new CSSStyleSheet();
+    this.sheet = this.createStyleSheet();
     this.cacheClassName = new Set();
     this.insertMode = this.config.useInnerHTML ? INSERT_MODE.HTML : INSERT_MODE.RULE;
     this.rules = [...rulePrioritySort(this.config.rules)]; // Import user-defined rules
@@ -59,6 +59,20 @@ export class LightCSS {
   private addCache(arr: Set<string> | Array<string> | DOMTokenList) {
     arr.forEach(v => this.cacheClassName.add(v));
     return this;
+  }
+
+  private createStyleSheet(): CSSStyleSheet {
+    if (typeof CSSStyleSheet === 'undefined') {
+      this.insertMode = INSERT_MODE.HTML;
+      return null as unknown as CSSStyleSheet;
+    }
+    try {
+      return new CSSStyleSheet();
+    } catch {
+      this.insertMode = INSERT_MODE.HTML;
+      logger.warn('[LightCSS] CSSStyleSheet constructor not available, using legacy API');
+      return null as unknown as CSSStyleSheet;
+    }
   }
 
   /**
